@@ -1,14 +1,17 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+
 interface Card {
   code: string;
   image: string;
   hidden: boolean;
 }
+
 const HomePage = () => {
   const [cards, setCards] = useState<Card[]>([]);
   const [isFlipped, setIsFlipped] = useState<boolean>(false);
   const [flippedCards, setFlippedCards] = useState<string[]>([]);
+  const [initialReveal, setInitialReveal] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -18,9 +21,15 @@ const HomePage = () => {
         if (response.status === 200) {
           const modifiedCards = response.data.map((card: Card) => ({
             ...card,
-            hidden: true,
+            hidden: initialReveal ? false : true, 
           }));
           setCards(modifiedCards);
+          setTimeout(() => {
+            setCards((prevCards) =>
+              prevCards.map((card) => ({ ...card, hidden: true }))
+            );
+            setInitialReveal(false); // Update the state to prevent further reveals
+          }, 2000);
         } else {
           console.error("Error fetching cards:", response.data.message);
         }
@@ -31,9 +40,11 @@ const HomePage = () => {
 
     fetchData();
   }, []);
+
   const doubleCard = (code: string, newCards: string[]) => {
     return newCards.filter((cardCode) => cardCode === code).length === 2;
   };
+
   const handleCardClick = (card: Card) => {
     if (flippedCards.length < 2) {
       setFlippedCards([...flippedCards, card.code]);
@@ -61,6 +72,7 @@ const HomePage = () => {
       }, 2000);
     }
   };
+
   return (
     <div className="h-screen mx-auto flex flex-col items-center justify-center w-[500px]">
       <h1 className="text-4xl font-bold mb-6">Memory Card Game</h1>
