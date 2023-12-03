@@ -1,16 +1,22 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
+import { motion } from "framer-motion";
 
 interface Card {
   code: string;
   image: string;
+  index: number;
   hidden: boolean;
+  matched: boolean;
+}
+interface FlippedCard {
+  code: string;
+  index: number;
 }
 
 const HomePage = () => {
   const [cards, setCards] = useState<Card[]>([]);
-  const [isFlipped, setIsFlipped] = useState<boolean>(false);
-  const [flippedCards, setFlippedCards] = useState<string[]>([]);
+  const [flippedCards, setFlippedCards] = useState<FlippedCard[]>([]);
   const [initialReveal, setInitialReveal] = useState<boolean>(true);
 
   useEffect(() => {
@@ -19,10 +25,14 @@ const HomePage = () => {
         const response = await axios.get("/api/dog");
 
         if (response.status === 200) {
-          const modifiedCards = response.data.map((card: Card) => ({
-            ...card,
-            hidden: initialReveal ? false : true, 
-          }));
+          const modifiedCards = response.data.map(
+            (card: Card, index: number) => ({
+              ...card,
+              hidden: initialReveal ? false : true,
+              index: index,
+            })
+          );
+          console.log(modifiedCards);
           setCards(modifiedCards);
           setTimeout(() => {
             setCards((prevCards) =>
@@ -41,36 +51,53 @@ const HomePage = () => {
     fetchData();
   }, []);
 
-  const doubleCard = (code: string, newCards: string[]) => {
-    return newCards.filter((cardCode) => cardCode === code).length === 2;
-  };
+  useEffect(() => {
+    console.log("cards in use effect", cards);
+  }, [cards]);
 
-  const handleCardClick = (card: Card) => {
-    if (flippedCards.length < 2) {
-      setFlippedCards([...flippedCards, card.code]);
+  const handleCardClick = (clickedCard: Card) => {
+    // Show the clicked card
+    const updatedCards = cards.map((card) =>
+      card.index === clickedCard.index ? { ...card, hidden: false } : card
+    );
+    setCards(updatedCards);
 
-      const newCards = [...flippedCards, card.code];
+    // Add the flipped card to the flippedCards state
+    const updatedFlippedCards = [
+      ...flippedCards,
+      { code: clickedCard.code, index: clickedCard.index },
+    ];
+    setFlippedCards(updatedFlippedCards);
 
-      if (doubleCard(card.code, newCards)) {
-        setCards((prevCards) =>
-          prevCards.map((mappedCard: Card) =>
-            mappedCard.code === card.code
-              ? { ...mappedCard, hidden: false }
-              : mappedCard
-          )
-        );
+    // Check for matching cards
+    updatedFlippedCards.forEach((flippedCard) => {
+      if (
+        flippedCard.code === clickedCard.code &&
+        flippedCard.index !== clickedCard.index
+      ) {
+        const isMatching = (x: Card) =>
+          x.code === flippedCard.code
+            ? { ...x, matched: true, hidden: false }
+            : { ...x, matched: false, hidden: true };
+  
+        const matchedCards = cards.map(isMatching);
+        setCards(matchedCards);
+  
+        console.log("matched cards", matchedCards);
       }
-
-      card.hidden = false;
-
-      const intervalId = setInterval(() => {
-        card.hidden = true;
-        setFlippedCards((prevFlippedCards) =>
-          prevFlippedCards.filter((code) => code !== card.code)
-        );
-        clearInterval(intervalId);
-      }, 2000);
-    }
+    });
+  
+    console.log("cards:", cards);
+    setTimeout(() => {
+      setFlippedCards([]);
+      const modifiedCards = cards.map((x) => {
+        if (!x.matched) {
+          x.hidden = true;
+        }
+        return x;
+      });
+      setCards(modifiedCards);
+    }, 2000);
   };
 
   return (
@@ -79,7 +106,7 @@ const HomePage = () => {
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
         {Array.isArray(cards) &&
           cards.map((card: Card, index: number) => (
-            <div
+            <motion.div
               key={index}
               className={`relative aspect-w-2 aspect-h-3 border-2 border-gray-300 rounded-md overflow-hidden`}
               onClick={() => handleCardClick(card)}
@@ -92,7 +119,7 @@ const HomePage = () => {
                 alt={card.code}
                 className="object-cover w-full h-full"
               />
-            </div>
+            </motion.div>
           ))}
       </div>
     </div>
