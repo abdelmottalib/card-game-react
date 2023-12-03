@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { motion } from "framer-motion";
+import Confetti from "react-confetti";
 
 interface Card {
   code: string;
@@ -20,6 +21,8 @@ const HomePage = () => {
   const [flippedCards, setFlippedCards] = useState<FlippedCard[]>([]);
   const [initialReveal, setInitialReveal] = useState<boolean>(true);
   const [refrech, setRefrech] = useState<boolean>(false);
+  const [showConfetti, setShowConfetti] = useState<boolean>(false);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -52,7 +55,16 @@ const HomePage = () => {
 
     fetchData();
   }, [refrech]);
+  useEffect(() => {
+    console.log("cards in use effect", cards);
 
+    // Check if all cards are not hidden
+    if (cards.every((card) => !card.hidden) && !initialReveal) {
+      setShowConfetti(true);
+    } else {
+      setShowConfetti(false);
+    }
+  }, [cards]);
   useEffect(() => {
     console.log("cards in use effect", cards);
   }, [cards]);
@@ -147,6 +159,13 @@ const HomePage = () => {
       >
         New Cards
       </motion.button>
+      {showConfetti && (
+        <Confetti
+          width={window.innerWidth}
+          height={window.innerHeight}
+          numberOfPieces={200}
+        />
+      )}
     </div>
   );
 };
