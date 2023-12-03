@@ -44,7 +44,7 @@ const HomePage = () => {
             );
             setInitialReveal(false); // Update the state to prevent further reveals
             setRefrech(false);
-          }, 2000);
+          }, 1500);
         } else {
           console.error("Error fetching cards:", response.data.message);
         }
@@ -102,23 +102,21 @@ const HomePage = () => {
             : card
         );
         setCards(updatedMatchedCards);
-      }
 
-      // Reset flipped cards after a delay
-      setTimeout(() => {
+        // Reset flipped cards immediately for matching cards
         setFlippedCards([]);
+      } else {
+        // Reset flipped cards after a delay for non-matching cards
+        setTimeout(() => {
+          setFlippedCards([]);
 
-        // If two cards didn't match, hide them
-        if (
-          updatedFlippedCards[0].code !== updatedFlippedCards[1].code ||
-          updatedFlippedCards[0].index === updatedFlippedCards[1].index
-        ) {
+          // If two cards didn't match, hide them
           const modifiedCards = updatedCards.map((card) =>
             !card.matched ? { ...card, hidden: true } : card
           );
           setCards(modifiedCards);
-        }
-      }, 2000);
+        }, 1500);
+      }
     }
   };
 
@@ -155,7 +153,7 @@ const HomePage = () => {
           setInitialReveal(true);
           setRefrech(true);
         }}
-        animate={{ x: refrech ? 50 : 0}}
+        animate={{ x: refrech ? 50 : 0 }}
       >
         New Cards
       </motion.button>
