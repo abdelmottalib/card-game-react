@@ -12,17 +12,18 @@ interface Card {
 interface FlippedCard {
   code: string;
   index: number;
+  matched?: number;
 }
 
 const HomePage = () => {
   const [cards, setCards] = useState<Card[]>([]);
   const [flippedCards, setFlippedCards] = useState<FlippedCard[]>([]);
   const [initialReveal, setInitialReveal] = useState<boolean>(true);
-
+  const [refrech, setRefrech] = useState<boolean>(false);
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("/api/dog");
+        const response = await axios.get("/api/game");
 
         if (response.status === 200) {
           const modifiedCards = response.data.map(
@@ -39,6 +40,7 @@ const HomePage = () => {
               prevCards.map((card) => ({ ...card, hidden: true }))
             );
             setInitialReveal(false); // Update the state to prevent further reveals
+            setRefrech(false);
           }, 2000);
         } else {
           console.error("Error fetching cards:", response.data.message);
@@ -49,13 +51,18 @@ const HomePage = () => {
     };
 
     fetchData();
-  }, []);
+  }, [refrech]);
 
   useEffect(() => {
     console.log("cards in use effect", cards);
   }, [cards]);
 
   const handleCardClick = (clickedCard: Card) => {
+    // Check if two cards are already flipped
+    if (flippedCards.length === 2) {
+      return; // Prevent selecting more than two cards at once
+    }
+
     // Show the clicked card
     const updatedCards = cards.map((card) =>
       card.index === clickedCard.index ? { ...card, hidden: false } : card
@@ -69,35 +76,38 @@ const HomePage = () => {
     ];
     setFlippedCards(updatedFlippedCards);
 
-    // Check for matching cards
-    updatedFlippedCards.forEach((flippedCard) => {
+    // Check if two cards are flipped
+    if (updatedFlippedCards.length === 2) {
+      // If the two cards match, mark them as matched
       if (
-        flippedCard.code === clickedCard.code &&
-        flippedCard.index !== clickedCard.index
+        updatedFlippedCards[0].code === updatedFlippedCards[1].code &&
+        updatedFlippedCards[0].index !== updatedFlippedCards[1].index
       ) {
-        const isMatching = (x: Card) =>
-          x.code === flippedCard.code
-            ? { ...x, matched: true, hidden: false }
-            : { ...x, matched: false, hidden: true };
-  
-        const matchedCards = cards.map(isMatching);
-        setCards(matchedCards);
-  
-        console.log("matched cards", matchedCards);
+        const updatedMatchedCards = updatedCards.map((card) =>
+          card.index === updatedFlippedCards[0].index ||
+          card.index === updatedFlippedCards[1].index
+            ? { ...card, matched: true }
+            : card
+        );
+        setCards(updatedMatchedCards);
       }
-    });
-  
-    console.log("cards:", cards);
-    setTimeout(() => {
-      setFlippedCards([]);
-      const modifiedCards = cards.map((x) => {
-        if (!x.matched) {
-          x.hidden = true;
+
+      // Reset flipped cards after a delay
+      setTimeout(() => {
+        setFlippedCards([]);
+
+        // If two cards didn't match, hide them
+        if (
+          updatedFlippedCards[0].code !== updatedFlippedCards[1].code ||
+          updatedFlippedCards[0].index === updatedFlippedCards[1].index
+        ) {
+          const modifiedCards = updatedCards.map((card) =>
+            !card.matched ? { ...card, hidden: true } : card
+          );
+          setCards(modifiedCards);
         }
-        return x;
-      });
-      setCards(modifiedCards);
-    }, 2000);
+      }, 2000);
+    }
   };
 
   return (
@@ -110,9 +120,14 @@ const HomePage = () => {
               key={index}
               className={`relative aspect-w-2 aspect-h-3 border-2 border-gray-300 rounded-md overflow-hidden`}
               onClick={() => handleCardClick(card)}
+              initial={{ rotateY: 0 }}
+              animate={{
+                rotateY: card.hidden ? -180 : 0,
+              }}
+              transition={{ duration: 0.5 }}
             >
               {card.hidden && (
-                <div className="absolute inset-0 bg-gray-800 opacity-80"></div>
+                <div className="absolute inset-0 bg-gray-800"></div>
               )}
               <img
                 src={card.image}
@@ -122,6 +137,16 @@ const HomePage = () => {
             </motion.div>
           ))}
       </div>
+      <motion.button
+        className="mt-10 bg-slate-200 h-10 w-28 rounded text-black border border-gray-800"
+        onClick={() => {
+          setInitialReveal(true);
+          setRefrech(true);
+        }}
+        animate={{ x: refrech ? 50 : 0}}
+      >
+        New Cards
+      </motion.button>
     </div>
   );
 };
