@@ -27,12 +27,15 @@ const HomePage = () => {
   const [time, setTime] = useState<number>(0);
   const [gameStarted, setGameStarted] = useState<boolean>(false);
   const [moves, setMoves] = useState<number>(0);
+  const [matchedCardsAnimation, setMatchedCardsAnimation] = useState<boolean>(
+    false
+  );
 
   useEffect(() => {
     setTime(0);
     const interval = setInterval(() => {
       if (gameStarted) {
-        setTime((prevTime) => prevTime + 1); 
+        setTime((prevTime) => prevTime + 1);
       }
     }, 1000);
 
@@ -68,7 +71,7 @@ const HomePage = () => {
     };
 
     fetchData();
-    setGameStarted(false)
+    setGameStarted(false);
   }, [refrech]);
 
   useEffect(() => {
@@ -113,14 +116,19 @@ const HomePage = () => {
         updatedFlippedCards[0].code === updatedFlippedCards[1].code &&
         updatedFlippedCards[0].index !== updatedFlippedCards[1].index
       ) {
-        const updatedMatchedCards = updatedCards.map((card) =>
-          card.index === updatedFlippedCards[0].index ||
-          card.index === updatedFlippedCards[1].index
-            ? { ...card, matched: true }
-            : card
-        );
-        setCards(updatedMatchedCards);
-        setFlippedCards([]);
+        setMatchedCardsAnimation(true);
+
+        setTimeout(() => {
+          setFlippedCards([]);
+          setMatchedCardsAnimation(false);
+          const updatedMatchedCards = updatedCards.map((card) =>
+            card.index === updatedFlippedCards[0].index ||
+            card.index === updatedFlippedCards[1].index
+              ? { ...card, matched: true }
+              : card
+          );
+          setCards(updatedMatchedCards);
+        }, 1000);
       } else {
         setTimeout(() => {
           setFlippedCards([]);
@@ -134,9 +142,9 @@ const HomePage = () => {
   };
 
   return (
-    <div className="h-screen mx-auto flex flex-col items-center justify-center w-[500px]">
+    <div className="h-screen mx-auto flex flex-col items-center justify-center w-[500px] text-white">
       <div className="flex gap-16 mb-5">
-        <div className="flex items-center justify-around rounded border borded-grey-50 w-36 h-10 bg-gray-500">
+<div className="flex items-center justify-around rounded border border-sky-200 w-36 h-10 ">
           <MdOutlineTimer />
           {formatTime(time)}
         </div>
@@ -152,6 +160,10 @@ const HomePage = () => {
               initial={{ rotateY: 0 }}
               animate={{
                 rotateY: card.hidden ? -180 : 0,
+                boxShadow: matchedCardsAnimation
+                  ? "0 0 20px #4CAF50"
+                  : "none", // Glow effect for matched cards
+                opacity: matchedCardsAnimation ? 0.7 : 1, // Adjust opacity for matched cards
               }}
               whileHover={{ scale: 1.1, transition: { duration: 0.2 } }}
               transition={{ duration: 0.5 }}
@@ -168,7 +180,7 @@ const HomePage = () => {
           ))}
       </div>
       <motion.div
-        className="mt-10  h-10 w-full rounded  flex items-center cursor-pointer"
+        className="mt-10  h-10 w-full rounded  flex items-center "
         onClick={() => {
           setInitialReveal(true);
           setRefrech(!refrech);
@@ -176,7 +188,7 @@ const HomePage = () => {
         }}
       >
         <div className="flex items-center justify-around w-full">
-          <div className="flex items-center justify-around rounded border borded-grey-50 px-5 h-10 bg-gray-500">
+          <div className="flex items-center justify-around rounded border border-sky-200 bg-sky-700 shadow-md px-5 h-10 ">
             moves: {moves}
           </div>
           <motion.div
@@ -184,7 +196,7 @@ const HomePage = () => {
             transition={{ type: "tween", duration: 0.2 }}
             whileHover={{ scale: 1.4, transition: { duration: 0.2 } }}
           >
-            <MdOutlineRestartAlt className="text-4xl text-white" />
+            <MdOutlineRestartAlt className="text-4xl text-white cursor-pointer" />
           </motion.div>
         </div>
       </motion.div>
