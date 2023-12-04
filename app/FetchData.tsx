@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
+import { MdOutlineTimer } from "react-icons/md";
 import axios from "axios";
 import { motion } from "framer-motion";
 import Confetti from "react-confetti";
+import { MdOutlineRestartAlt } from "react-icons/md";
 
 interface Card {
   code: string;
@@ -22,6 +24,20 @@ const HomePage = () => {
   const [initialReveal, setInitialReveal] = useState<boolean>(true);
   const [refrech, setRefrech] = useState<boolean>(false);
   const [showConfetti, setShowConfetti] = useState<boolean>(false);
+  const [time, setTime] = useState<number>(0);
+  const [gameStarted, setGameStarted] = useState<boolean>(false);
+  const [moves, setMoves] = useState<number>(0);
+
+  useEffect(() => {
+    setTime(0);
+    const interval = setInterval(() => {
+      if (gameStarted) {
+        setTime((prevTime) => prevTime + 1); 
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [gameStarted, refrech]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -36,15 +52,13 @@ const HomePage = () => {
               index: index,
             })
           );
-          console.log(modifiedCards);
           setCards(modifiedCards);
           setTimeout(() => {
             setCards((prevCards) =>
               prevCards.map((card) => ({ ...card, hidden: true }))
             );
-            setInitialReveal(false); // Update the state to prevent further reveals
-            setRefrech(false);
-          }, 1500);
+            setInitialReveal(false);
+          }, 4500);
         } else {
           console.error("Error fetching cards:", response.data.message);
         }
@@ -54,43 +68,47 @@ const HomePage = () => {
     };
 
     fetchData();
+    setGameStarted(false)
   }, [refrech]);
-  useEffect(() => {
-    console.log("cards in use effect", cards);
 
-    // Check if all cards are not hidden
+  useEffect(() => {
     if (cards.every((card) => !card.hidden) && !initialReveal) {
       setShowConfetti(true);
     } else {
       setShowConfetti(false);
     }
-  }, [cards]);
-  useEffect(() => {
-    console.log("cards in use effect", cards);
-  }, [cards]);
+  }, [cards, initialReveal]);
+
+  const formatTime = (seconds: number) => {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const remainingSeconds = seconds % 60;
+
+    return `${hours > 0 ? `${hours}h ` : ""}${minutes}m ${remainingSeconds}s`;
+  };
 
   const handleCardClick = (clickedCard: Card) => {
-    // Check if two cards are already flipped
-    if (flippedCards.length === 2) {
-      return; // Prevent selecting more than two cards at once
+    setMoves((prev) => prev + 1);
+    if (!gameStarted) {
+      setGameStarted(true);
     }
 
-    // Show the clicked card
+    if (flippedCards.length === 2) {
+      return;
+    }
+
     const updatedCards = cards.map((card) =>
       card.index === clickedCard.index ? { ...card, hidden: false } : card
     );
     setCards(updatedCards);
 
-    // Add the flipped card to the flippedCards state
     const updatedFlippedCards = [
       ...flippedCards,
       { code: clickedCard.code, index: clickedCard.index },
     ];
     setFlippedCards(updatedFlippedCards);
 
-    // Check if two cards are flipped
     if (updatedFlippedCards.length === 2) {
-      // If the two cards match, mark them as matched
       if (
         updatedFlippedCards[0].code === updatedFlippedCards[1].code &&
         updatedFlippedCards[0].index !== updatedFlippedCards[1].index
@@ -102,15 +120,10 @@ const HomePage = () => {
             : card
         );
         setCards(updatedMatchedCards);
-
-        // Reset flipped cards immediately for matching cards
         setFlippedCards([]);
       } else {
-        // Reset flipped cards after a delay for non-matching cards
         setTimeout(() => {
           setFlippedCards([]);
-
-          // If two cards didn't match, hide them
           const modifiedCards = updatedCards.map((card) =>
             !card.matched ? { ...card, hidden: true } : card
           );
@@ -122,7 +135,13 @@ const HomePage = () => {
 
   return (
     <div className="h-screen mx-auto flex flex-col items-center justify-center w-[500px]">
-      <h1 className="text-4xl font-bold mb-6">Memory Card Game</h1>
+      <div className="flex gap-16 mb-5">
+        <div className="flex items-center justify-around rounded border borded-grey-50 w-36 h-10 bg-gray-500">
+          <MdOutlineTimer />
+          {formatTime(time)}
+        </div>
+        <h1 className="text-2xl font-bold mb-6">Memory Card Game</h1>
+      </div>
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
         {Array.isArray(cards) &&
           cards.map((card: Card, index: number) => (
@@ -134,6 +153,7 @@ const HomePage = () => {
               animate={{
                 rotateY: card.hidden ? -180 : 0,
               }}
+              whileHover={{ scale: 1.1, transition: { duration: 0.2 } }}
               transition={{ duration: 0.5 }}
             >
               {card.hidden && (
@@ -147,16 +167,27 @@ const HomePage = () => {
             </motion.div>
           ))}
       </div>
-      <motion.button
-        className="mt-10 bg-slate-200 h-10 w-28 rounded text-black border border-gray-800"
+      <motion.div
+        className="mt-10  h-10 w-full rounded  flex items-center cursor-pointer"
         onClick={() => {
           setInitialReveal(true);
-          setRefrech(true);
+          setRefrech(!refrech);
+          setMoves(0);
         }}
-        animate={{ x: refrech ? 50 : 0 }}
       >
-        New Cards
-      </motion.button>
+        <div className="flex items-center justify-around w-full">
+          <div className="flex items-center justify-around rounded border borded-grey-50 px-5 h-10 bg-gray-500">
+            moves: {moves}
+          </div>
+          <motion.div
+            animate={{ rotate: refrech ? 360 : 0 }}
+            transition={{ type: "tween", duration: 0.2 }}
+            whileHover={{ scale: 1.4, transition: { duration: 0.2 } }}
+          >
+            <MdOutlineRestartAlt className="text-4xl text-white" />
+          </motion.div>
+        </div>
+      </motion.div>
       {showConfetti && (
         <Confetti
           width={window.innerWidth}
