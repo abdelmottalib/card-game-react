@@ -22,7 +22,6 @@ const HomePage = () => {
   const [cards, setCards] = useState<Card[]>([]);
   const [flippedCards, setFlippedCards] = useState<FlippedCard[]>([]);
   const [initialReveal, setInitialReveal] = useState<boolean>(true);
-  const [refrech, setRefrech] = useState<boolean>(false);
   const [showConfetti, setShowConfetti] = useState<boolean>(false);
   const [time, setTime] = useState<number>(0);
   const [gameStarted, setGameStarted] = useState<boolean>(false);
@@ -30,6 +29,8 @@ const HomePage = () => {
   const [matchedCardsAnimation, setMatchedCardsAnimation] =
     useState<boolean>(false);
   const [gameCompleted, setGameCompleted] = useState<boolean>(false);
+  const [playButtonClicked, setPlayButtonClicked] = useState<boolean>(false);
+  const [placeHolder, setPlaceHolder] = useState(true);
 
   useEffect(() => {
     if (!gameCompleted) setTime(0);
@@ -40,65 +41,63 @@ const HomePage = () => {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [gameStarted, refrech, gameCompleted]);
+  }, [gameStarted, gameCompleted]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get("/api/game");
+    if (playButtonClicked) {
+      const fetchData = async () => {
+        try {
+          const response = await axios.get("/api/game");
 
-        if (response.status === 200) {
-          const modifiedCards = response.data.map(
-            (card: Card, index: number) => ({
-              ...card,
-              hidden: true,
-              index: index,
-            })
-          );
-          modifiedCards.forEach((card: Card, index: number) => {
-            setTimeout(() => {
-              setCards((prevCards) =>
-                prevCards.map((prevCard, prevIndex) =>
-                  prevIndex === index
-                    ? { ...prevCard, hidden: false }
-                    : prevCard
-                )
-              );
-            }, index * 100);
-          });
-          setCards(modifiedCards);
-          setTimeout(() => {
+          if (response.status === 200) {
+            const modifiedCards = response.data.map(
+              (card: Card, index: number) => ({
+                ...card,
+                hidden: true,
+                index: index,
+              })
+            );
             modifiedCards.forEach((card: Card, index: number) => {
               setTimeout(() => {
                 setCards((prevCards) =>
                   prevCards.map((prevCard, prevIndex) =>
                     prevIndex === index
-                      ? { ...prevCard, hidden: true }
+                      ? { ...prevCard, hidden: false }
                       : prevCard
                   )
                 );
+                setPlaceHolder(false);
               }, index * 100);
-              setInitialReveal(false);
             });
-          },  4000);
-          // setTimeout(() => {
-          //   setCards((prevCards) =>
-          //     prevCards.map((card) => ({ ...card, hidden: true }))
-          //   );
-          //   setInitialReveal(false);
-          // }, 4500);
-        } else {
-          console.error("Error fetching cards:", response.data.message);
+            setCards(modifiedCards);
+            setTimeout(() => {
+              modifiedCards.forEach((card: Card, index: number) => {
+                setTimeout(() => {
+                  setCards((prevCards) =>
+                    prevCards.map((prevCard, prevIndex) =>
+                      prevIndex === index
+                        ? { ...prevCard, hidden: true }
+                        : prevCard
+                    )
+                  );
+                }, index * 100);
+                setInitialReveal(false);
+              });
+            }, 4000);
+          } else {
+            console.error("Error fetching cards:", response.data.message);
+          }
+        } catch (error) {
+          console.error("Error fetching data:", error);
         }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
+      };
 
-    fetchData();
-    setGameStarted(false);
-    setGameCompleted(false);
-  }, [refrech]);
+      fetchData();
+      setPlayButtonClicked(false);
+      setGameStarted(false);
+      setGameCompleted(false);
+    }
+  }, [playButtonClicked]);
 
   useEffect(() => {
     if (cards.every((card) => !card.hidden) && !initialReveal) {
@@ -118,7 +117,13 @@ const HomePage = () => {
   };
 
   const handleCardClick = (clickedCard: Card) => {
-    setMoves((prev) => prev + 1);
+    if (
+      flippedCards.every(
+        (card) => card.index !== clickedCard.index && clickedCard.hidden
+      )
+    ) {
+      setMoves((prev) => prev + 1);
+    }
     if (!gameStarted) {
       setGameStarted(true);
     }
@@ -167,7 +172,6 @@ const HomePage = () => {
       }
     }
   };
-
   return (
     <div className="h-screen mx-auto flex flex-col items-center justify-center w-[500px] text-white">
       <div className="flex gap-16 mb-5">
@@ -178,6 +182,17 @@ const HomePage = () => {
         <h1 className="text-2xl font-bold mb-6">Memory Card Game</h1>
       </div>
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+        {Array.from({ length: 20 }, (_, index) => (
+          <div
+            key={index}
+            className={`w-[91px] h-[120px] relative aspect-w-2 aspect-h-3 border-2 border-gray-300 rounded-md overflow-hidden ${
+              !placeHolder ? "hidden" : ""
+            }`}
+          >
+            <div className="absolute inset-0 bg-gray-800"></div>
+          </div>
+        ))}
+
         {Array.isArray(cards) &&
           cards.map((card: Card, index: number) => (
             <motion.div
@@ -208,7 +223,6 @@ const HomePage = () => {
         className="mt-10  h-10 w-full rounded  flex items-center "
         onClick={() => {
           setInitialReveal(true);
-          setRefrech(!refrech);
           setMoves(0);
         }}
       >
@@ -216,13 +230,17 @@ const HomePage = () => {
           <div className="flex items-center justify-around rounded border border-sky-200 bg-sky-700 shadow-md px-5 h-10 ">
             moves: {moves}
           </div>
-          <motion.div
-            animate={{ rotate: refrech ? 360 : 0 }}
-            transition={{ type: "tween", duration: 0.2 }}
-            whileHover={{ scale: 1.4, transition: { duration: 0.2 } }}
+          <motion.button
+            className="flex items-center justify-around rounded border border-emerald-200 bg-emerald-700 shadow-md px-5 h-10 "
+            onClick={() => {
+              setInitialReveal(true);
+              setMoves(0);
+              setShowConfetti(false);
+              setPlayButtonClicked(true);
+            }}
           >
-            <MdOutlineRestartAlt className="text-4xl text-white cursor-pointer" />
-          </motion.div>
+            Play
+          </motion.button>
         </div>
       </motion.div>
       {showConfetti && (
