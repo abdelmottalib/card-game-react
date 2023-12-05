@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { createAndShuffleDeck, drawCards } from "./utils";
 import { MdOutlineTimer } from "react-icons/md";
 import axios from "axios";
 import { motion } from "framer-motion";
@@ -46,46 +47,49 @@ const HomePage = () => {
     if (playButtonClicked) {
       const fetchData = async () => {
         try {
-          const response = await axios.get("/api/game");
+          // const response = await axios.get("/api/game");
+          const deckId = await createAndShuffleDeck();
+          const drawnCards = await drawCards(deckId, 10); // Change 10 to the desired number of pairs
 
-          if (response.status === 200) {
-            const modifiedCards = response.data.map(
-              (card: Card, index: number) => ({
-                ...card,
-                hidden: true,
-                index: index,
-              })
-            );
+          // Duplicate the cards to create matching pairs
+          const duplicatedCards = [...drawnCards, ...drawnCards];
+          // Shuffle the duplicated cards
+          const shuffledCards = duplicatedCards.sort(() => Math.random() - 0.5);
+          // const response = shuffledCards;
+          const modifiedCards = shuffledCards.map(
+            (card: Card, index: number) => ({
+              ...card,
+              hidden: true,
+              index: index,
+            })
+          );
+          modifiedCards.forEach((card: Card, index: number) => {
+            setTimeout(() => {
+              setCards((prevCards) =>
+                prevCards.map((prevCard, prevIndex) =>
+                  prevIndex === index
+                    ? { ...prevCard, hidden: false }
+                    : prevCard
+                )
+              );
+              setPlaceHolder(false);
+            }, index * 100);
+          });
+          setCards(modifiedCards);
+          setTimeout(() => {
             modifiedCards.forEach((card: Card, index: number) => {
               setTimeout(() => {
                 setCards((prevCards) =>
                   prevCards.map((prevCard, prevIndex) =>
                     prevIndex === index
-                      ? { ...prevCard, hidden: false }
+                      ? { ...prevCard, hidden: true }
                       : prevCard
                   )
                 );
-                setPlaceHolder(false);
               }, index * 100);
+              setInitialReveal(false);
             });
-            setCards(modifiedCards);
-            setTimeout(() => {
-              modifiedCards.forEach((card: Card, index: number) => {
-                setTimeout(() => {
-                  setCards((prevCards) =>
-                    prevCards.map((prevCard, prevIndex) =>
-                      prevIndex === index
-                        ? { ...prevCard, hidden: true }
-                        : prevCard
-                    )
-                  );
-                }, index * 100);
-                setInitialReveal(false);
-              });
-            }, 4000);
-          } else {
-            console.error("Error fetching cards:", response.data.message);
-          }
+          }, 4000);
         } catch (error) {
           console.error("Error fetching data:", error);
         }
@@ -187,8 +191,8 @@ const HomePage = () => {
             className={`w-[88px] h-[120px] relative aspect-w-2 aspect-h-3 border-2 border-gray-300 rounded-md overflow-hidden ${
               !placeHolder ? "hidden" : ""
             }`}
-            initial={{rotate:360}}
-            animate={{rotate:0}}
+            initial={{ rotate: 360 }}
+            animate={{ rotate: 0 }}
           >
             <div className="absolute inset-0 bg-gray-800"></div>
           </motion.div>
@@ -239,8 +243,8 @@ const HomePage = () => {
               setShowConfetti(false);
               setPlayButtonClicked(true);
             }}
-            whileHover={{scale:1.1}}
-            whileTap={{scale:1.2}}
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 1.2 }}
           >
             Play
           </motion.button>
