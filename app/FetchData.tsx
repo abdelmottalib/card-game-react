@@ -27,20 +27,20 @@ const HomePage = () => {
   const [time, setTime] = useState<number>(0);
   const [gameStarted, setGameStarted] = useState<boolean>(false);
   const [moves, setMoves] = useState<number>(0);
-  const [matchedCardsAnimation, setMatchedCardsAnimation] = useState<boolean>(
-    false
-  );
+  const [matchedCardsAnimation, setMatchedCardsAnimation] =
+    useState<boolean>(false);
+  const [gameCompleted, setGameCompleted] = useState<boolean>(false);
 
   useEffect(() => {
-    setTime(0);
+    if (!gameCompleted) setTime(0);
     const interval = setInterval(() => {
-      if (gameStarted) {
+      if (gameStarted && !gameCompleted) {
         setTime((prevTime) => prevTime + 1);
       }
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [gameStarted, refrech]);
+  }, [gameStarted, refrech, gameCompleted]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -51,17 +51,42 @@ const HomePage = () => {
           const modifiedCards = response.data.map(
             (card: Card, index: number) => ({
               ...card,
-              hidden: initialReveal ? false : true,
+              hidden: true,
               index: index,
             })
           );
+          modifiedCards.forEach((card: Card, index: number) => {
+            setTimeout(() => {
+              setCards((prevCards) =>
+                prevCards.map((prevCard, prevIndex) =>
+                  prevIndex === index
+                    ? { ...prevCard, hidden: false }
+                    : prevCard
+                )
+              );
+            }, index * 100);
+          });
           setCards(modifiedCards);
           setTimeout(() => {
-            setCards((prevCards) =>
-              prevCards.map((card) => ({ ...card, hidden: true }))
-            );
-            setInitialReveal(false);
-          }, 4500);
+            modifiedCards.forEach((card: Card, index: number) => {
+              setTimeout(() => {
+                setCards((prevCards) =>
+                  prevCards.map((prevCard, prevIndex) =>
+                    prevIndex === index
+                      ? { ...prevCard, hidden: true }
+                      : prevCard
+                  )
+                );
+              }, index * 100);
+              setInitialReveal(false);
+            });
+          },  4000);
+          // setTimeout(() => {
+          //   setCards((prevCards) =>
+          //     prevCards.map((card) => ({ ...card, hidden: true }))
+          //   );
+          //   setInitialReveal(false);
+          // }, 4500);
         } else {
           console.error("Error fetching cards:", response.data.message);
         }
@@ -72,11 +97,13 @@ const HomePage = () => {
 
     fetchData();
     setGameStarted(false);
+    setGameCompleted(false);
   }, [refrech]);
 
   useEffect(() => {
     if (cards.every((card) => !card.hidden) && !initialReveal) {
       setShowConfetti(true);
+      setGameCompleted(true);
     } else {
       setShowConfetti(false);
     }
@@ -144,7 +171,7 @@ const HomePage = () => {
   return (
     <div className="h-screen mx-auto flex flex-col items-center justify-center w-[500px] text-white">
       <div className="flex gap-16 mb-5">
-<div className="flex items-center justify-around rounded border border-sky-200 w-36 h-10 ">
+        <div className="flex items-center justify-around rounded border border-sky-200 bg-sky-700 w-36 h-10 ">
           <MdOutlineTimer />
           {formatTime(time)}
         </div>
@@ -160,10 +187,8 @@ const HomePage = () => {
               initial={{ rotateY: 0 }}
               animate={{
                 rotateY: card.hidden ? -180 : 0,
-                boxShadow: matchedCardsAnimation
-                  ? "0 0 20px #4CAF50"
-                  : "none", // Glow effect for matched cards
-                opacity: matchedCardsAnimation ? 0.7 : 1, // Adjust opacity for matched cards
+                boxShadow: matchedCardsAnimation ? "0 0 20px #4CAF50" : "none",
+                opacity: matchedCardsAnimation ? 0.7 : 1,
               }}
               whileHover={{ scale: 1.1, transition: { duration: 0.2 } }}
               transition={{ duration: 0.5 }}
