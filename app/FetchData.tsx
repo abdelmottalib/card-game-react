@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { createAndShuffleDeck, drawCards } from "./utils";
 import { MdOutlineTimer } from "react-icons/md";
-import axios from "axios";
 import { motion } from "framer-motion";
 import Confetti from "react-confetti";
 
