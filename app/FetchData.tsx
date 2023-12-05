@@ -3,7 +3,6 @@ import { MdOutlineTimer } from "react-icons/md";
 import axios from "axios";
 import { motion } from "framer-motion";
 import Confetti from "react-confetti";
-import { MdOutlineRestartAlt } from "react-icons/md";
 
 interface Card {
   code: string;
@@ -240,6 +239,8 @@ const HomePage = () => {
               setShowConfetti(false);
               setPlayButtonClicked(true);
             }}
+            whileHover={{scale:1.1}}
+            whileTap={{scale:1.2}}
           >
             Play
           </motion.button>

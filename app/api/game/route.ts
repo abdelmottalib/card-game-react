@@ -16,7 +16,7 @@ export async function drawCards(deckId: string, count: number) {
 
   return drawnCards;
 }
-export async function GET() {
+export default async function GET() {
   try {
     const deckId = await createAndShuffleDeck();
     const drawnCards = await drawCards(deckId, 10); // Change 10 to the desired number of pairs
