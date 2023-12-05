@@ -183,14 +183,16 @@ const HomePage = () => {
       </div>
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
         {Array.from({ length: 20 }, (_, index) => (
-          <div
+          <motion.div
             key={index}
-            className={`w-[91px] h-[120px] relative aspect-w-2 aspect-h-3 border-2 border-gray-300 rounded-md overflow-hidden ${
+            className={`w-[88px] h-[120px] relative aspect-w-2 aspect-h-3 border-2 border-gray-300 rounded-md overflow-hidden ${
               !placeHolder ? "hidden" : ""
             }`}
+            initial={{rotate:360}}
+            animate={{rotate:0}}
           >
             <div className="absolute inset-0 bg-gray-800"></div>
-          </div>
+          </motion.div>
         ))}
 
         {Array.isArray(cards) &&
