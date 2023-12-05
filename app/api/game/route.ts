@@ -1,9 +1,12 @@
 import axios from "axios";
-const DECK_API_BASE_URL = 'https://deckofcardsapi.com/api/deck';
+import { NextResponse } from "next/server";
+const DECK_API_BASE_URL = "https://deckofcardsapi.com/api/deck";
 
 // Create a new deck and shuffle it
 export async function createAndShuffleDeck() {
-  const createDeckResponse = await axios.get(`${DECK_API_BASE_URL}/new/shuffle/?deck_count=1`);
+  const createDeckResponse = await axios.get(
+    `${DECK_API_BASE_URL}/new/shuffle/?deck_count=1`
+  );
   const deckId = createDeckResponse.data.deck_id;
 
   return deckId;
@@ -11,7 +14,9 @@ export async function createAndShuffleDeck() {
 
 // Draw a specified number of cards from the deck
 export async function drawCards(deckId: string, count: number) {
-  const drawCardResponse = await axios.get(`${DECK_API_BASE_URL}/${deckId}/draw/?count=${count}`);
+  const drawCardResponse = await axios.get(
+    `${DECK_API_BASE_URL}/${deckId}/draw/?count=${count}`
+  );
   const drawnCards = drawCardResponse.data.cards;
 
   return drawnCards;
@@ -26,10 +31,10 @@ export default async function GET() {
 
     // Shuffle the duplicated cards
     const shuffledCards = duplicatedCards.sort(() => Math.random() - 0.5);
-    console.log(shuffledCards)
-    return Response.json(shuffledCards);
+    console.log(shuffledCards);
+    return NextResponse.json(shuffledCards);
   } catch (error) {
     console.error("Error fetching data:", error);
-    return Response.error();
+    return NextResponse.error();
   }
 }
