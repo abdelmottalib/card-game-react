@@ -30,6 +30,14 @@ const HomePage = () => {
   const [gameCompleted, setGameCompleted] = useState<boolean>(false);
   const [playButtonClicked, setPlayButtonClicked] = useState<boolean>(false);
   const [placeHolder, setPlaceHolder] = useState(true);
+  const [difficulty, setDifficulty] = useState({
+    easy: true,
+    medium: false,
+    hard: false,
+  });
+  const [clickable, setClickable] = useState(false);
+  const [clickableButtons, setClickableButtons] = useState(true)
+
 
   useEffect(() => {
     if (!gameCompleted) setTime(0);
@@ -46,15 +54,18 @@ const HomePage = () => {
     if (playButtonClicked) {
       const fetchData = async () => {
         try {
-          // const response = await axios.get("/api/game");
           const deckId = await createAndShuffleDeck();
-          const drawnCards = await drawCards(deckId, 10); // Change 10 to the desired number of pairs
-
-          // Duplicate the cards to create matching pairs
+          const count = difficulty.easy
+            ? 10
+            : difficulty.medium
+              ? 20
+              : difficulty.hard
+                ? 40
+                : 10;
+          console.log(count)
+          const drawnCards = await drawCards(deckId, count);
           const duplicatedCards = [...drawnCards, ...drawnCards];
-          // Shuffle the duplicated cards
           const shuffledCards = duplicatedCards.sort(() => Math.random() - 0.5);
-          // const response = shuffledCards;
           const modifiedCards = shuffledCards.map(
             (card: Card, index: number) => ({
               ...card,
@@ -87,8 +98,10 @@ const HomePage = () => {
                 );
               }, index * 100);
               setInitialReveal(false);
+              setClickable(true)
+              setClickableButtons(true)
             });
-          }, 4000);
+          }, difficulty.hard ? 8000 : 4000);
         } catch (error) {
           console.error("Error fetching data:", error);
         }
@@ -98,6 +111,7 @@ const HomePage = () => {
       setPlayButtonClicked(false);
       setGameStarted(false);
       setGameCompleted(false);
+      setClickableButtons(false)
     }
   }, [playButtonClicked]);
 
@@ -157,7 +171,7 @@ const HomePage = () => {
           setMatchedCardsAnimation(false);
           const updatedMatchedCards = updatedCards.map((card) =>
             card.index === updatedFlippedCards[0].index ||
-            card.index === updatedFlippedCards[1].index
+              card.index === updatedFlippedCards[1].index
               ? { ...card, matched: true }
               : card
           );
@@ -174,22 +188,69 @@ const HomePage = () => {
       }
     }
   };
+  useEffect(() => {
+    console.log(difficulty)
+  }, [difficulty.easy])
   return (
-    <div className="h-screen mx-auto flex flex-col items-center justify-center w-[500px] text-white">
+    <div
+      className={`h-screen mx-auto flex flex-col items-center justify-center ${difficulty.easy
+        ? "w-[550px]"
+        : // : difficulty.medium
+        // ? "w-[950px]"
+        "w-[1000px]"
+        } text-white`}
+    >
       <div className="flex gap-16 mb-5">
         <div className="flex items-center justify-around rounded border border-sky-200 bg-sky-700 w-36 h-10 ">
           <MdOutlineTimer />
           {formatTime(time)}
         </div>
-        <h1 className="text-2xl font-bold mb-6">Memory Card Game</h1>
+        {/* <h1 className="text-2xl font-bold mb-6">Memory Card Game</h1> */}
+        <div className="flex gap-2">
+          <div
+            className={`flex items-center justify-around rounded border border-sky-200 bg-sky-700 shadow-md px-5 h-10 ${!clickableButtons ? "opacity-50" : ""} `}
+            onClick={() => {
+              if (clickableButtons) {
+                setDifficulty({ easy: true, medium: false, hard: false });
+                setPlayButtonClicked(true);
+                console.log(difficulty);
+
+              }
+            }}
+          >
+            easy
+          </div>
+          <div
+            className={`flex items-center justify-around rounded border border-sky-200 bg-sky-700 shadow-md px-5 h-10 ${!clickableButtons ? "opacity-50" : ""} `}
+            onClick={() => {
+              if (clickableButtons) {
+                setDifficulty({ easy: false, medium: true, hard: false });
+                setPlayButtonClicked(true);
+                console.log(difficulty);
+              }
+            }}
+          >
+            medium
+          </div>
+          <div
+            className={`flex items-center justify-around rounded border border-sky-200 bg-sky-700 shadow-md px-5 h-10 ${!clickableButtons ? "opacity-50" : ""} `}
+            onClick={() => {
+              if (clickableButtons) {
+                setDifficulty({ easy: false, medium: false, hard: true });
+                setPlayButtonClicked(true);
+                console.log(difficulty);
+              }
+            }}
+          >
+            hard
+          </div>
+        </div>
       </div>
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-        {Array.from({ length: 20 }, (_, index) => (
+      <div className={`grid ${difficulty.easy ? "grid-cols-5" : "grid-cols-10"} gap-4`}>
+        {Array.from({ length: difficulty.easy ? 20 : difficulty.medium ? 40 : 80 }, (_, index) => (
           <motion.div
             key={index}
-            className={`w-[88px] h-[120px] relative aspect-w-2 aspect-h-3 border-2 border-gray-300 rounded-md overflow-hidden ${
-              !placeHolder ? "hidden" : ""
-            }`}
+            className={`w-[88px] h-[120px] relative aspect-w-2 aspect-h-3 border-2 border-gray-300 rounded-md overflow-hidden ${!placeHolder ? "hidden" : ""}`}
             initial={{ rotate: 360 }}
             animate={{ rotate: 0 }}
           >
@@ -215,11 +276,7 @@ const HomePage = () => {
               {card.hidden && (
                 <div className="absolute inset-0 bg-gray-800"></div>
               )}
-              <img
-                src={card.image}
-                alt={card.code}
-                className="object-cover w-full h-full"
-              />
+              <img src={card.image} alt={card.code} className="object-cover w-20" />
             </motion.div>
           ))}
       </div>
@@ -235,12 +292,14 @@ const HomePage = () => {
             moves: {moves}
           </div>
           <motion.button
-            className="flex items-center justify-around rounded border border-emerald-200 bg-emerald-700 shadow-md px-5 h-10 "
+            className={`flex items-center justify-around rounded border border-emerald-200 bg-emerald-700 shadow-md px-5 h-10 ${!clickableButtons ? "opacity-50" : ""} `}
             onClick={() => {
-              setInitialReveal(true);
-              setMoves(0);
-              setShowConfetti(false);
-              setPlayButtonClicked(true);
+              if (clickableButtons) {
+                setInitialReveal(true);
+                setMoves(0);
+                setShowConfetti(false);
+                setPlayButtonClicked(true);
+              }
             }}
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 1.2 }}
