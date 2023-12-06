@@ -37,6 +37,7 @@ const HomePage = () => {
   });
   const [clickable, setClickable] = useState(false);
   const [clickableButtons, setClickableButtons] = useState(true)
+  const [loading, setLoading] = useState(true)
 
 
   useEffect(() => {
@@ -52,6 +53,7 @@ const HomePage = () => {
 
   useEffect(() => {
     if (playButtonClicked) {
+      setClickableButtons(false)
       const fetchData = async () => {
         try {
           const deckId = await createAndShuffleDeck();
@@ -64,6 +66,7 @@ const HomePage = () => {
                 : 10;
           console.log(count)
           const drawnCards = await drawCards(deckId, count);
+          setLoading(false)
           const duplicatedCards = [...drawnCards, ...drawnCards];
           const shuffledCards = duplicatedCards.sort(() => Math.random() - 0.5);
           const modifiedCards = shuffledCards.map(
@@ -98,20 +101,21 @@ const HomePage = () => {
                 );
               }, index * 100);
               setInitialReveal(false);
-              setClickable(true)
-              setClickableButtons(true)
             });
+            setTimeout(() => {
+              setClickable(true);
+              setClickableButtons(true);
+            }, difficulty.hard ? 8000 : 4000)
+
           }, difficulty.hard ? 8000 : 4000);
         } catch (error) {
           console.error("Error fetching data:", error);
         }
       };
-
       fetchData();
       setPlayButtonClicked(false);
       setGameStarted(false);
       setGameCompleted(false);
-      setClickableButtons(false)
     }
   }, [playButtonClicked]);
 
@@ -133,6 +137,7 @@ const HomePage = () => {
   };
 
   const handleCardClick = (clickedCard: Card) => {
+    if (!clickable) return
     if (
       flippedCards.every(
         (card) => card.index !== clickedCard.index && clickedCard.hidden
@@ -216,8 +221,6 @@ const HomePage = () => {
                 setMoves(0);
                 setShowConfetti(false);
                 setPlayButtonClicked(true);
-                console.log(difficulty);
-
               }
             }}
           >
@@ -232,7 +235,6 @@ const HomePage = () => {
                 setMoves(0);
                 setShowConfetti(false);
                 setPlayButtonClicked(true);
-                console.log(difficulty);
               }
             }}
           >
@@ -247,7 +249,6 @@ const HomePage = () => {
                 setMoves(0);
                 setShowConfetti(false);
                 setPlayButtonClicked(true);
-                console.log(difficulty);
               }
             }}
           >
@@ -255,23 +256,13 @@ const HomePage = () => {
           </div>
         </div>
       </div>
-      <div className={`grid ${difficulty.easy ? "grid-cols-5" : "grid-cols-10"} gap-4`}>
-        {Array.from({ length: difficulty.easy ? 20 : difficulty.medium ? 40 : 80 }, (_, index) => (
-          <motion.div
-            key={index}
-            className={`w-[88px] h-[120px] relative aspect-w-2 aspect-h-3 border-2 border-gray-300 rounded-md overflow-hidden ${!placeHolder ? "hidden" : ""}`}
-            initial={{ rotate: 360 }}
-            animate={{ rotate: 0 }}
-          >
-            <div className="absolute inset-0 bg-gray-800"></div>
-          </motion.div>
-        ))}
-
-        {Array.isArray(cards) &&
+      <div className={`grid ${difficulty.easy ? "grid-cols-5" : "grid-cols-10"} gap-4 ${difficulty.hard ? "h-[1020px]" : "h-[507px]"}`}>
+        {!loading ?
+          Array.isArray(cards) &&
           cards.map((card: Card, index: number) => (
             <motion.div
               key={index}
-              className={`relative aspect-w-2 aspect-h-3 border-2 border-gray-300 rounded-md overflow-hidden`}
+              className={`relative aspect-w-2  aspect-h-3 border-2 border-gray-300 rounded-md overflow-hidden`}
               onClick={() => handleCardClick(card)}
               initial={{ rotateY: 0 }}
               animate={{
@@ -286,6 +277,17 @@ const HomePage = () => {
                 <div className="absolute inset-0 bg-gray-800"></div>
               )}
               <img src={card.image} alt={card.code} className="object-cover w-20" />
+            </motion.div>
+          ))
+          :
+          Array.from({ length: difficulty.easy ? 20 : difficulty.medium ? 40 : 80 }, (_, index) => (
+            <motion.div
+              key={index}
+              className={`w-[88px] h-[120px] relative aspect-w-2 aspect-h-3 border-2 border-gray-300 rounded-md overflow-hidden `}
+              initial={{ rotate: 360 }}
+              animate={{ rotate: 0 }}
+            >
+              <div className="absolute inset-0 bg-gray-800"></div>
             </motion.div>
           ))}
       </div>
