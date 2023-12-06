@@ -212,6 +212,9 @@ const HomePage = () => {
             onClick={() => {
               if (clickableButtons) {
                 setDifficulty({ easy: true, medium: false, hard: false });
+                setInitialReveal(true);
+                setMoves(0);
+                setShowConfetti(false);
                 setPlayButtonClicked(true);
                 console.log(difficulty);
 
@@ -225,6 +228,9 @@ const HomePage = () => {
             onClick={() => {
               if (clickableButtons) {
                 setDifficulty({ easy: false, medium: true, hard: false });
+                setInitialReveal(true);
+                setMoves(0);
+                setShowConfetti(false);
                 setPlayButtonClicked(true);
                 console.log(difficulty);
               }
@@ -237,6 +243,9 @@ const HomePage = () => {
             onClick={() => {
               if (clickableButtons) {
                 setDifficulty({ easy: false, medium: false, hard: true });
+                setInitialReveal(true);
+                setMoves(0);
+                setShowConfetti(false);
                 setPlayButtonClicked(true);
                 console.log(difficulty);
               }
