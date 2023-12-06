@@ -99,13 +99,13 @@ const HomePage = () => {
                       : prevCard
                   )
                 );
+                if (index === modifiedCards.length - 1) {
+                  setClickable(true);
+                  setClickableButtons(true);
+                }
               }, index * 100);
               setInitialReveal(false);
             });
-            setTimeout(() => {
-              setClickable(true);
-              setClickableButtons(true);
-            }, difficulty.hard ? 8000 : 4000)
 
           }, difficulty.hard ? 8000 : 4000);
         } catch (error) {
@@ -137,7 +137,9 @@ const HomePage = () => {
   };
 
   const handleCardClick = (clickedCard: Card) => {
-    if (!clickable) return
+    if (!clickable) {
+      return
+    }
     if (
       flippedCards.every(
         (card) => card.index !== clickedCard.index && clickedCard.hidden
