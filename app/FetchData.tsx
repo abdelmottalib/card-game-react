@@ -114,6 +114,7 @@ const HomePage = () => {
               Promise.all(promises).then(() => {
                 setClickable(true);
                 setClickableButtons(true);
+                setInitialReveal(false);
               });
             },
             difficulty.hard ? 8000 : 4000
