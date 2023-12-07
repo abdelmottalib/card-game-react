@@ -291,9 +291,9 @@ const HomePage = () => {
                 initial={{ rotateY: 0 }}
                 animate={{
                   rotateY: card.hidden ? -180 : 0,
-                  boxShadow: matchedCardsAnimation
-                    ? '0 0 20px #4CAF50'
-                    : 'none',
+                  // boxShadow: matchedCardsAnimation
+                  //   ? '0 0 20px #4CAF50'
+                  //   : 'none',
                   opacity: matchedCardsAnimation ? 0.7 : 1,
                 }}
                 whileHover={{ scale: 1.1, transition: { duration: 0.2 } }}
