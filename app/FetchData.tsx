@@ -227,7 +227,7 @@ const HomePage = () => {
         {/* <h1 className="text-2xl font-bold mb-6">Memory Card Game</h1> */}
         <div className="flex gap-2">
           <div
-            className={`flex items-center justify-around rounded border border-sky-200 bg-emerald-700 shadow-md px-5 h-10 cursor-pointer ${
+            className={`flex items-center justify-around rounded border border-emerald-200 bg-emerald-700 shadow-md px-5 h-10 cursor-pointer ${
               !clickableButtons ? 'opacity-50' : ''
             } `}
             onClick={() => {
@@ -243,7 +243,7 @@ const HomePage = () => {
             easy
           </div>
           <div
-            className={`flex items-center justify-around rounded border border-sky-200 bg-emerald-700 shadow-md px-5 h-10 cursor-pointer ${
+            className={`flex items-center justify-around rounded border border-emerald-200 bg-emerald-700 shadow-md px-5 h-10 cursor-pointer ${
               !clickableButtons ? 'opacity-50' : ''
             } `}
             onClick={() => {
@@ -259,7 +259,7 @@ const HomePage = () => {
             medium
           </div>
           <div
-            className={`flex items-center justify-around rounded border border-sky-200 bg-emerald-700 shadow-md px-5 h-10 cursor-pointer ${
+            className={`flex items-center justify-around rounded border border-emerald-200 bg-emerald-700 shadow-md px-5 h-10 cursor-pointer ${
               !clickableButtons ? 'opacity-50' : ''
             } `}
             onClick={() => {
