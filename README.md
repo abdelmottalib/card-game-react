@@ -7,7 +7,7 @@ The Memory Card Game is a web-based game built with Next.js and styled with Tail
 ## Features
 
 - Memory card matching game
-- Responsive design using Tailwind CSS
+- Styling using Tailwind CSS
 
 ### Prerequisites
 
