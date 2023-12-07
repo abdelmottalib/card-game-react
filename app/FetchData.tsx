@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
-import { createAndShuffleDeck, drawCards } from "./utils";
-import { MdOutlineTimer } from "react-icons/md";
-import { motion } from "framer-motion";
-import Confetti from "react-confetti";
+import { useState, useEffect } from 'react';
+import { createAndShuffleDeck, drawCards } from './utils';
+import { MdOutlineTimer } from 'react-icons/md';
+import { motion } from 'framer-motion';
+import Confetti from 'react-confetti';
 
 interface Card {
   code: string;
@@ -15,6 +15,14 @@ interface FlippedCard {
   code: string;
   index: number;
   matched?: number;
+}
+function delayAction(action: () => void, milliseconds: number): Promise<void> {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      action();
+      resolve();
+    }, milliseconds);
+  });
 }
 
 const HomePage = () => {
@@ -36,9 +44,8 @@ const HomePage = () => {
     hard: false,
   });
   const [clickable, setClickable] = useState(false);
-  const [clickableButtons, setClickableButtons] = useState(true)
-  const [loading, setLoading] = useState(true)
-
+  const [clickableButtons, setClickableButtons] = useState(true);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!gameCompleted) setTime(0);
@@ -53,20 +60,20 @@ const HomePage = () => {
 
   useEffect(() => {
     if (playButtonClicked) {
-      setClickableButtons(false)
+      setClickableButtons(false);
       const fetchData = async () => {
         try {
           const deckId = await createAndShuffleDeck();
           const count = difficulty.easy
             ? 10
             : difficulty.medium
-              ? 20
-              : difficulty.hard
-                ? 40
-                : 10;
-          console.log(count)
+            ? 20
+            : difficulty.hard
+            ? 40
+            : 10;
+          console.log(count);
           const drawnCards = await drawCards(deckId, count);
-          setLoading(false)
+          setLoading(false);
           const duplicatedCards = [...drawnCards, ...drawnCards];
           const shuffledCards = duplicatedCards.sort(() => Math.random() - 0.5);
           const modifiedCards = shuffledCards.map(
@@ -86,30 +93,33 @@ const HomePage = () => {
                 )
               );
               setPlaceHolder(false);
+              setClickable(false);
             }, index * 100);
           });
           setCards(modifiedCards);
-          setTimeout(() => {
-            modifiedCards.forEach((card: Card, index: number) => {
-              setTimeout(() => {
-                setCards((prevCards) =>
-                  prevCards.map((prevCard, prevIndex) =>
-                    prevIndex === index
-                      ? { ...prevCard, hidden: true }
-                      : prevCard
-                  )
-                );
-                if (index === modifiedCards.length - 1) {
-                  setClickable(true);
-                  setClickableButtons(true);
-                }
-              }, index * 100);
-              setInitialReveal(false);
-            });
+          setTimeout(
+            () => {
+              const promises = modifiedCards.map((card: Card, index: number) =>
+                delayAction(() => {
+                  setCards((prevCards) =>
+                    prevCards.map((prevCard, prevIndex) =>
+                      prevIndex === index
+                        ? { ...prevCard, hidden: true }
+                        : prevCard
+                    )
+                  );
+                }, index * 100)
+              );
 
-          }, difficulty.hard ? 8000 : 4000);
+              Promise.all(promises).then(() => {
+                setClickable(true);
+                setClickableButtons(true);
+              });
+            },
+            difficulty.hard ? 8000 : 4000
+          );
         } catch (error) {
-          console.error("Error fetching data:", error);
+          console.error('Error fetching data:', error);
         }
       };
       fetchData();
@@ -133,12 +143,12 @@ const HomePage = () => {
     const minutes = Math.floor((seconds % 3600) / 60);
     const remainingSeconds = seconds % 60;
 
-    return `${hours > 0 ? `${hours}h ` : ""}${minutes}m ${remainingSeconds}s`;
+    return `${hours > 0 ? `${hours}h ` : ''}${minutes}m ${remainingSeconds}s`;
   };
-
+  useEffect(() => console.log(clickable), [clickable]);
   const handleCardClick = (clickedCard: Card) => {
     if (!clickable) {
-      return
+      return;
     }
     if (
       flippedCards.every(
@@ -178,7 +188,7 @@ const HomePage = () => {
           setMatchedCardsAnimation(false);
           const updatedMatchedCards = updatedCards.map((card) =>
             card.index === updatedFlippedCards[0].index ||
-              card.index === updatedFlippedCards[1].index
+            card.index === updatedFlippedCards[1].index
               ? { ...card, matched: true }
               : card
           );
@@ -196,16 +206,17 @@ const HomePage = () => {
     }
   };
   useEffect(() => {
-    console.log(difficulty)
-  }, [difficulty.easy])
+    console.log(difficulty);
+  }, [difficulty.easy]);
   return (
     <div
-      className={`h-screen mx-auto flex flex-col items-center justify-center ${difficulty.easy
-        ? "w-[550px]"
-        : // : difficulty.medium
-        // ? "w-[950px]"
-        "w-[1000px]"
-        } text-white`}
+      className={`h-screen mx-auto flex flex-col items-center justify-center ${
+        difficulty.easy
+          ? 'w-[550px]'
+          : // : difficulty.medium
+            // ? "w-[950px]"
+            'w-[1000px]'
+      } text-white`}
     >
       <div className="flex gap-16 mb-5">
         <div className="flex items-center justify-around rounded border border-sky-200 bg-sky-700 w-36 h-10 ">
@@ -215,7 +226,9 @@ const HomePage = () => {
         {/* <h1 className="text-2xl font-bold mb-6">Memory Card Game</h1> */}
         <div className="flex gap-2">
           <div
-            className={`flex items-center justify-around rounded border border-sky-200 bg-sky-700 shadow-md px-5 h-10 ${!clickableButtons ? "opacity-50" : ""} `}
+            className={`flex items-center justify-around rounded border border-sky-200 bg-sky-700 shadow-md px-5 h-10 ${
+              !clickableButtons ? 'opacity-50' : ''
+            } `}
             onClick={() => {
               if (clickableButtons) {
                 setDifficulty({ easy: true, medium: false, hard: false });
@@ -229,7 +242,9 @@ const HomePage = () => {
             easy
           </div>
           <div
-            className={`flex items-center justify-around rounded border border-sky-200 bg-sky-700 shadow-md px-5 h-10 ${!clickableButtons ? "opacity-50" : ""} `}
+            className={`flex items-center justify-around rounded border border-sky-200 bg-sky-700 shadow-md px-5 h-10 ${
+              !clickableButtons ? 'opacity-50' : ''
+            } `}
             onClick={() => {
               if (clickableButtons) {
                 setDifficulty({ easy: false, medium: true, hard: false });
@@ -243,7 +258,9 @@ const HomePage = () => {
             medium
           </div>
           <div
-            className={`flex items-center justify-around rounded border border-sky-200 bg-sky-700 shadow-md px-5 h-10 ${!clickableButtons ? "opacity-50" : ""} `}
+            className={`flex items-center justify-around rounded border border-sky-200 bg-sky-700 shadow-md px-5 h-10 ${
+              !clickableButtons ? 'opacity-50' : ''
+            } `}
             onClick={() => {
               if (clickableButtons) {
                 setDifficulty({ easy: false, medium: false, hard: true });
@@ -258,40 +275,52 @@ const HomePage = () => {
           </div>
         </div>
       </div>
-      <div className={`grid ${difficulty.easy ? "grid-cols-5" : "grid-cols-10"} gap-4 ${difficulty.hard ? "h-[1020px]" : "h-[507px]"}`}>
-        {!loading ?
-          Array.isArray(cards) &&
-          cards.map((card: Card, index: number) => (
-            <motion.div
-              key={index}
-              className={`relative aspect-w-2  aspect-h-3 border-2 border-gray-300 rounded-md overflow-hidden`}
-              onClick={() => handleCardClick(card)}
-              initial={{ rotateY: 0 }}
-              animate={{
-                rotateY: card.hidden ? -180 : 0,
-                boxShadow: matchedCardsAnimation ? "0 0 20px #4CAF50" : "none",
-                opacity: matchedCardsAnimation ? 0.7 : 1,
-              }}
-              whileHover={{ scale: 1.1, transition: { duration: 0.2 } }}
-              transition={{ duration: 0.5 }}
-            >
-              {card.hidden && (
-                <div className="absolute inset-0 bg-gray-800"></div>
-              )}
-              <img src={card.image} alt={card.code} className="object-cover w-20" />
-            </motion.div>
-          ))
-          :
-          Array.from({ length: difficulty.easy ? 20 : difficulty.medium ? 40 : 80 }, (_, index) => (
-            <motion.div
-              key={index}
-              className={`w-[88px] h-[120px] relative aspect-w-2 aspect-h-3 border-2 border-gray-300 rounded-md overflow-hidden `}
-              initial={{ rotate: 360 }}
-              animate={{ rotate: 0 }}
-            >
-              <div className="absolute inset-0 bg-gray-800"></div>
-            </motion.div>
-          ))}
+      <div
+        className={`grid ${
+          difficulty.easy ? 'grid-cols-5' : 'grid-cols-10'
+        } gap-4 ${difficulty.hard ? 'h-[1020px]' : 'h-[507px]'}`}
+      >
+        {!loading
+          ? Array.isArray(cards) &&
+            cards.map((card: Card, index: number) => (
+              <motion.div
+                key={index}
+                className={`relative aspect-w-2  aspect-h-3 border-2 border-gray-300 rounded-md overflow-hidden`}
+                onClick={() => handleCardClick(card)}
+                initial={{ rotateY: 0 }}
+                animate={{
+                  rotateY: card.hidden ? -180 : 0,
+                  boxShadow: matchedCardsAnimation
+                    ? '0 0 20px #4CAF50'
+                    : 'none',
+                  opacity: matchedCardsAnimation ? 0.7 : 1,
+                }}
+                whileHover={{ scale: 1.1, transition: { duration: 0.2 } }}
+                transition={{ duration: 0.5 }}
+              >
+                {card.hidden && (
+                  <div className="absolute inset-0 bg-gray-800"></div>
+                )}
+                <img
+                  src={card.image}
+                  alt={card.code}
+                  className="object-cover w-20"
+                />
+              </motion.div>
+            ))
+          : Array.from(
+              { length: difficulty.easy ? 20 : difficulty.medium ? 40 : 80 },
+              (_, index) => (
+                <motion.div
+                  key={index}
+                  className={`w-[88px] h-[120px] relative aspect-w-2 aspect-h-3 border-2 border-gray-300 rounded-md overflow-hidden `}
+                  initial={{ rotate: 360 }}
+                  animate={{ rotate: 0 }}
+                >
+                  <div className="absolute inset-0 bg-gray-800"></div>
+                </motion.div>
+              )
+            )}
       </div>
       <motion.div
         className="mt-10  h-10 w-full rounded  flex items-center "
@@ -305,7 +334,9 @@ const HomePage = () => {
             moves: {moves}
           </div>
           <motion.button
-            className={`flex items-center justify-around rounded border border-emerald-200 bg-emerald-700 shadow-md px-5 h-10 ${!clickableButtons ? "opacity-50" : ""} `}
+            className={`flex items-center justify-around rounded border border-emerald-200 bg-emerald-700 shadow-md px-5 h-10 ${
+              !clickableButtons ? 'opacity-50' : ''
+            } `}
             onClick={() => {
               if (clickableButtons) {
                 setInitialReveal(true);
