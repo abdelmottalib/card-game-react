@@ -23,5 +23,7 @@ Before you begin, ensure you have the following software installed on your machi
    git clone <repository-url>
    cd memory-card-game
    npm install
-   npm run dev ```
+   npm run dev
+   ```
+
    Open your browser and visit http://localhost:3000 to view the game.
