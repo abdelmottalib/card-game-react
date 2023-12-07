@@ -67,7 +67,7 @@ const HomePage = () => {
           const count = difficulty.easy
             ? 10
             : difficulty.medium
-            ? 15
+            ? 16
             : difficulty.hard
             ? 20
             : 10;
@@ -278,7 +278,7 @@ const HomePage = () => {
       </div>
       <div
         className={`grid ${
-          difficulty.easy ? 'grid-cols-5' : 'grid-cols-10'
+          difficulty.easy ? 'grid-cols-5' : 'grid-cols-8'
         } gap-4`}
       >
         {!loading
