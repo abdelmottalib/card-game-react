@@ -67,9 +67,9 @@ const HomePage = () => {
           const count = difficulty.easy
             ? 10
             : difficulty.medium
-            ? 20
+            ? 15
             : difficulty.hard
-            ? 40
+            ? 20
             : 10;
           console.log(count);
           const drawnCards = await drawCards(deckId, count);
@@ -227,7 +227,7 @@ const HomePage = () => {
         {/* <h1 className="text-2xl font-bold mb-6">Memory Card Game</h1> */}
         <div className="flex gap-2">
           <div
-            className={`flex items-center justify-around rounded border border-sky-200 bg-sky-700 shadow-md px-5 h-10 ${
+            className={`flex items-center justify-around rounded border border-sky-200 bg-emerald-700 shadow-md px-5 h-10 cursor-pointer ${
               !clickableButtons ? 'opacity-50' : ''
             } `}
             onClick={() => {
@@ -243,7 +243,7 @@ const HomePage = () => {
             easy
           </div>
           <div
-            className={`flex items-center justify-around rounded border border-sky-200 bg-sky-700 shadow-md px-5 h-10 ${
+            className={`flex items-center justify-around rounded border border-sky-200 bg-emerald-700 shadow-md px-5 h-10 cursor-pointer ${
               !clickableButtons ? 'opacity-50' : ''
             } `}
             onClick={() => {
@@ -259,7 +259,7 @@ const HomePage = () => {
             medium
           </div>
           <div
-            className={`flex items-center justify-around rounded border border-sky-200 bg-sky-700 shadow-md px-5 h-10 ${
+            className={`flex items-center justify-around rounded border border-sky-200 bg-emerald-700 shadow-md px-5 h-10 cursor-pointer ${
               !clickableButtons ? 'opacity-50' : ''
             } `}
             onClick={() => {
@@ -279,7 +279,7 @@ const HomePage = () => {
       <div
         className={`grid ${
           difficulty.easy ? 'grid-cols-5' : 'grid-cols-10'
-        } gap-4 ${difficulty.hard ? 'h-[1020px]' : 'h-[507px]'}`}
+        } gap-4`}
       >
         {!loading
           ? Array.isArray(cards) &&
@@ -310,7 +310,7 @@ const HomePage = () => {
               </motion.div>
             ))
           : Array.from(
-              { length: difficulty.easy ? 20 : difficulty.medium ? 40 : 80 },
+              { length: difficulty.easy ? 20 : difficulty.medium ? 30 : 40 },
               (_, index) => (
                 <motion.div
                   key={index}
