@@ -20,7 +20,7 @@ Before you begin, ensure you have the following software installed on your machi
 1. **Clone the repository:**
 
    ```bash
-   git clone <repository-url>
+   git clone git@github.com:konami2/card-game-next.git
    cd memory-card-game
    npm install
    npm run dev
