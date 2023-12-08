@@ -1,5 +1,11 @@
 import { useState, useEffect } from 'react';
-import { createAndShuffleDeck, drawCards } from './utils';
+import {
+  createAndShuffleDeck,
+  drawCards,
+  getCurrentShortestTime,
+  setCurrentShortestTime,
+  setLocalStorageCurrentShortestTime,
+} from './utils';
 import { MdOutlineTimer } from 'react-icons/md';
 import { motion } from 'framer-motion';
 import Confetti from 'react-confetti';
@@ -46,6 +52,15 @@ const HomePage = () => {
   const [clickable, setClickable] = useState(false);
   const [clickableButtons, setClickableButtons] = useState(true);
   const [loading, setLoading] = useState(true);
+  const [shortestTimeEasy, setShortestTimeEasy] = useState<number>(
+    parseInt(localStorage.getItem('shortestTimeEasy') || '0', 10)
+  );
+  const [shortestTimeMedium, setShortestTimeMedium] = useState<number>(
+    parseInt(localStorage.getItem('shortestTimeMedium') || '0', 10)
+  );
+  const [shortestTimeHard, setShortestTimeHard] = useState<number>(
+    parseInt(localStorage.getItem('shortestTimeHard') || '0', 10)
+  );
 
   useEffect(() => {
     if (!gameCompleted) setTime(0);
@@ -137,6 +152,23 @@ const HomePage = () => {
     if (cards.every((card) => !card.hidden) && !initialReveal) {
       setShowConfetti(true);
       setGameCompleted(true);
+      const currentShortestTime = getCurrentShortestTime(
+        difficulty,
+        shortestTimeEasy,
+        shortestTimeMedium,
+        shortestTimeHard
+      );
+
+      if (time < currentShortestTime! || currentShortestTime === 0) {
+        setCurrentShortestTime(
+          time,
+          difficulty,
+          setShortestTimeEasy,
+          setShortestTimeMedium,
+          setShortestTimeHard
+        );
+        setLocalStorageCurrentShortestTime(time, difficulty);
+      }
     } else {
       setShowConfetti(false);
     }
@@ -222,6 +254,20 @@ const HomePage = () => {
             'w-[1000px]'
       } text-white`}
     >
+      <div className="mb-5 flex flex-col gap-5">
+        <h1 className="mx-auto  text-2xl">Shortest Time</h1>
+        <div className=" flex gap-5">
+          <div className="bg-violet-800 border border-violet-200 p-2 rounded">
+            Easy: {formatTime(shortestTimeEasy)}
+          </div>
+          <div className="bg-violet-800 border border-violet-200 p-2 rounded">
+            Medium: {formatTime(shortestTimeMedium)}
+          </div>
+          <div className="bg-violet-800 border border-violet-200 p-2 rounded">
+            Hard: {formatTime(shortestTimeHard)}
+          </div>
+        </div>
+      </div>
       <div className="flex gap-16 mb-5">
         <div className="flex items-center justify-around rounded border border-sky-200 bg-sky-700 w-36 h-10 ">
           <MdOutlineTimer />
@@ -356,6 +402,7 @@ const HomePage = () => {
           </motion.button>
         </div>
       </motion.div>
+
       {showConfetti && (
         <Confetti
           width={window.innerWidth}
