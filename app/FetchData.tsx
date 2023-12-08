@@ -73,6 +73,9 @@ const HomePage = () => {
             : 10;
           console.log(count);
           const drawnCards = await drawCards(deckId, count);
+          //the glitch can be fixed with this need to have the component in position
+          //absolute and use the use the timeout to avoid the glitch
+          setTimeout(() => {});
           setLoading(false);
           const duplicatedCards = [...drawnCards, ...drawnCards];
           const shuffledCards = duplicatedCards.sort(() => Math.random() - 0.5);
@@ -314,7 +317,7 @@ const HomePage = () => {
               (_, index) => (
                 <motion.div
                   key={index}
-                  className={`w-[88px] h-[120px] relative aspect-w-2 aspect-h-3 border-2 border-gray-300 rounded-md overflow-hidden `}
+                  className={`w-[88px] h-[120px] relative aspect-w-2 aspect-h-3 border-2 border-gray-300 rounded-md overflow-hidden`}
                   initial={{ rotate: 360 }}
                   animate={{ rotate: 0 }}
                 >
