@@ -18,6 +18,7 @@ interface Card {
   hidden: boolean;
   matched: boolean;
 }
+
 interface FlippedCard {
   code: string;
   index: number;
