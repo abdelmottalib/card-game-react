@@ -10,6 +10,7 @@ import { MdOutlineTimer } from 'react-icons/md';
 import { motion } from 'framer-motion';
 import Confetti from 'react-confetti';
 
+
 interface Card {
   code: string;
   image: string;
