@@ -7,10 +7,10 @@ import {
   setLocalStorageCurrentShortestTime,
   formatTime,
 } from './utils';
-import { MdOutlineTimer } from 'react-icons/md';
 import { motion } from 'framer-motion';
 import Confetti from 'react-confetti';
 import GameHeader from './components/GameHeader';
+import DifficultySelector from './components/DifficultySelector';
 
 interface Card {
   code: string;
@@ -255,63 +255,15 @@ const HomePage = () => {
         shortestTimeMedium={shortestTimeMedium}
         shortestTimeHard={shortestTimeHard}
       />
-      <div className="flex gap-16 mb-5">
-        <div className="flex items-center justify-around rounded border border-sky-200 bg-sky-700 w-36 h-10 ">
-          <MdOutlineTimer />
-          {formatTime(time)}
-        </div>
-        {/* <h1 className="text-2xl font-bold mb-6">Memory Card Game</h1> */}
-        <div className="flex gap-2">
-          <div
-            className={`flex items-center justify-around rounded border border-emerald-200 bg-emerald-700 shadow-md px-5 h-10 cursor-pointer ${
-              !clickableButtons ? 'opacity-50' : ''
-            } `}
-            onClick={() => {
-              if (clickableButtons) {
-                setDifficulty({ easy: true, medium: false, hard: false });
-                setInitialReveal(true);
-                setMoves(0);
-                setShowConfetti(false);
-                setPlayButtonClicked(true);
-              }
-            }}
-          >
-            easy
-          </div>
-          <div
-            className={`flex items-center justify-around rounded border border-emerald-200 bg-emerald-700 shadow-md px-5 h-10 cursor-pointer ${
-              !clickableButtons ? 'opacity-50' : ''
-            } `}
-            onClick={() => {
-              if (clickableButtons) {
-                setDifficulty({ easy: false, medium: true, hard: false });
-                setInitialReveal(true);
-                setMoves(0);
-                setShowConfetti(false);
-                setPlayButtonClicked(true);
-              }
-            }}
-          >
-            medium
-          </div>
-          <div
-            className={`flex items-center justify-around rounded border border-emerald-200 bg-emerald-700 shadow-md px-5 h-10 cursor-pointer ${
-              !clickableButtons ? 'opacity-50' : ''
-            } `}
-            onClick={() => {
-              if (clickableButtons) {
-                setDifficulty({ easy: false, medium: false, hard: true });
-                setInitialReveal(true);
-                setMoves(0);
-                setShowConfetti(false);
-                setPlayButtonClicked(true);
-              }
-            }}
-          >
-            hard
-          </div>
-        </div>
-      </div>
+      <DifficultySelector
+        clickableButtons={clickableButtons}
+        setDifficulty={setDifficulty}
+        setInitialReveal={setInitialReveal}
+        setMoves={setMoves}
+        setShowConfetti={setShowConfetti}
+        setPlayButtonClicked={setPlayButtonClicked}
+        time={time}
+      />
       <div
         className={`grid ${
           difficulty.easy ? 'grid-cols-5' : 'grid-cols-8'
