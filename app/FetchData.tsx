@@ -5,13 +5,14 @@ import {
   getCurrentShortestTime,
   setCurrentShortestTime,
   setLocalStorageCurrentShortestTime,
-  formatTime,
+  delayAction,
 } from './utils';
 import { motion } from 'framer-motion';
 import Confetti from 'react-confetti';
 import GameHeader from './components/GameHeader';
 import DifficultySelector from './components/DifficultySelector';
 import CardGrid from './components/CardGrid';
+import GameControls from './components/GameControlls';
 
 interface Card {
   code: string;
@@ -25,14 +26,6 @@ interface FlippedCard {
   code: string;
   index: number;
   matched?: number;
-}
-function delayAction(action: () => void, milliseconds: number): Promise<void> {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      action();
-      resolve();
-    }, milliseconds);
-  });
 }
 
 const HomePage = () => {
@@ -272,36 +265,14 @@ const HomePage = () => {
         handleCardClick={handleCardClick}
         matchedCardsAnimation={matchedCardsAnimation}
       />
-      <motion.div
-        className="mt-10  h-10 w-full rounded  flex items-center "
-        onClick={() => {
-          setInitialReveal(true);
-          setMoves(0);
-        }}
-      >
-        <div className="flex items-center justify-around w-full">
-          <div className="flex items-center justify-around rounded border border-sky-200 bg-sky-700 shadow-md px-5 h-10 ">
-            moves: {moves}
-          </div>
-          <motion.button
-            className={`flex items-center justify-around rounded border border-emerald-200 bg-emerald-700 shadow-md px-5 h-10 ${
-              !clickableButtons ? 'opacity-50' : ''
-            } `}
-            onClick={() => {
-              if (clickableButtons) {
-                setInitialReveal(true);
-                setMoves(0);
-                setShowConfetti(false);
-                setPlayButtonClicked(true);
-              }
-            }}
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 1.2 }}
-          >
-            Play
-          </motion.button>
-        </div>
-      </motion.div>
+      <GameControls
+        clickableButtons={clickableButtons}
+        setInitialReveal={setInitialReveal}
+        setMoves={setMoves}
+        setShowConfetti={setShowConfetti}
+        setPlayButtonClicked={setPlayButtonClicked}
+        moves={moves}
+      />
 
       {showConfetti && (
         <Confetti

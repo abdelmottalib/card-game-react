@@ -67,3 +67,11 @@ export const formatTime = (seconds: number) => {
 
   return `${hours > 0 ? `${hours}h ` : ''}${minutes}m ${remainingSeconds}s`;
 };
+export function delayAction(action: () => void, milliseconds: number): Promise<void> {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      action();
+      resolve();
+    }, milliseconds);
+  });
+}
