@@ -11,6 +11,7 @@ import { motion } from 'framer-motion';
 import Confetti from 'react-confetti';
 import GameHeader from './components/GameHeader';
 import DifficultySelector from './components/DifficultySelector';
+import CardGrid from './components/CardGrid';
 
 interface Card {
   code: string;
@@ -264,53 +265,13 @@ const HomePage = () => {
         setPlayButtonClicked={setPlayButtonClicked}
         time={time}
       />
-      <div
-        className={`grid ${
-          difficulty.easy ? 'grid-cols-5' : 'grid-cols-8'
-        } gap-4`}
-      >
-        {!loading
-          ? Array.isArray(cards) &&
-            cards.map((card: Card, index: number) => (
-              <motion.div
-                key={index}
-                className={`relative aspect-w-2  aspect-h-3 border-2 border-gray-300 rounded-md overflow-hidden`}
-                onClick={() => handleCardClick(card)}
-                initial={{ rotateY: 0 }}
-                animate={{
-                  rotateY: card.hidden ? -180 : 0,
-                  // boxShadow: matchedCardsAnimation
-                  //   ? '0 0 20px #4CAF50'
-                  //   : 'none',
-                  opacity: matchedCardsAnimation ? 0.7 : 1,
-                }}
-                whileHover={{ scale: 1.1, transition: { duration: 0.2 } }}
-                transition={{ duration: 0.5 }}
-              >
-                {card.hidden && (
-                  <div className="absolute inset-0 bg-gray-800"></div>
-                )}
-                <img
-                  src={card.image}
-                  alt={card.code}
-                  className="object-cover w-20"
-                />
-              </motion.div>
-            ))
-          : Array.from(
-              { length: difficulty.easy ? 20 : difficulty.medium ? 30 : 40 },
-              (_, index) => (
-                <motion.div
-                  key={index}
-                  className={`w-[88px] h-[120px] relative aspect-w-2 aspect-h-3 border-2 border-gray-300 rounded-md overflow-hidden`}
-                  initial={{ rotate: 360 }}
-                  animate={{ rotate: 0 }}
-                >
-                  <div className="absolute inset-0 bg-gray-800"></div>
-                </motion.div>
-              )
-            )}
-      </div>
+      <CardGrid
+        difficulty={difficulty}
+        loading={loading}
+        cards={cards}
+        handleCardClick={handleCardClick}
+        matchedCardsAnimation={matchedCardsAnimation}
+      />
       <motion.div
         className="mt-10  h-10 w-full rounded  flex items-center "
         onClick={() => {
