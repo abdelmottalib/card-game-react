@@ -7,7 +7,6 @@ import {
   setLocalStorageCurrentShortestTime,
   delayAction,
 } from './utils';
-import { motion } from 'framer-motion';
 import Confetti from 'react-confetti';
 import GameHeader from './components/GameHeader';
 import DifficultySelector from './components/DifficultySelector';
@@ -40,7 +39,6 @@ const HomePage = () => {
     useState<boolean>(false);
   const [gameCompleted, setGameCompleted] = useState<boolean>(false);
   const [playButtonClicked, setPlayButtonClicked] = useState<boolean>(false);
-  const [placeHolder, setPlaceHolder] = useState(true);
   const [difficulty, setDifficulty] = useState({
     easy: true,
     medium: false,
@@ -83,7 +81,6 @@ const HomePage = () => {
             : difficulty.hard
             ? 20
             : 10;
-          console.log(count);
           const drawnCards = await drawCards(deckId, count);
           //the glitch can be fixed with this need to have the component in position
           //absolute and use the use the timeout to avoid the glitch
@@ -107,7 +104,6 @@ const HomePage = () => {
                     : prevCard
                 )
               );
-              setPlaceHolder(false);
               setClickable(false);
             }, index * 100);
           });
@@ -171,7 +167,6 @@ const HomePage = () => {
     }
   }, [cards, initialReveal]);
 
-  useEffect(() => console.log(clickable), [clickable]);
   const handleCardClick = (clickedCard: Card) => {
     if (!clickable) {
       return;
@@ -231,9 +226,6 @@ const HomePage = () => {
       }
     }
   };
-  useEffect(() => {
-    console.log(difficulty);
-  }, [difficulty.easy]);
   return (
     <div
       className={`h-screen mx-auto flex flex-col items-center justify-center ${
