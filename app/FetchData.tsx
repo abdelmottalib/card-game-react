@@ -5,11 +5,12 @@ import {
   getCurrentShortestTime,
   setCurrentShortestTime,
   setLocalStorageCurrentShortestTime,
+  formatTime,
 } from './utils';
 import { MdOutlineTimer } from 'react-icons/md';
 import { motion } from 'framer-motion';
 import Confetti from 'react-confetti';
-
+import GameHeader from './components/GameHeader';
 
 interface Card {
   code: string;
@@ -176,13 +177,6 @@ const HomePage = () => {
     }
   }, [cards, initialReveal]);
 
-  const formatTime = (seconds: number) => {
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    const remainingSeconds = seconds % 60;
-
-    return `${hours > 0 ? `${hours}h ` : ''}${minutes}m ${remainingSeconds}s`;
-  };
   useEffect(() => console.log(clickable), [clickable]);
   const handleCardClick = (clickedCard: Card) => {
     if (!clickable) {
@@ -256,20 +250,11 @@ const HomePage = () => {
             'w-[1000px]'
       } text-white`}
     >
-      <div className="mb-5 flex flex-col gap-5">
-        <h1 className="mx-auto  text-2xl">Shortest Time</h1>
-        <div className=" flex gap-5">
-          <div className="bg-violet-800 border border-violet-200 p-2 rounded">
-            Easy: {formatTime(shortestTimeEasy)}
-          </div>
-          <div className="bg-violet-800 border border-violet-200 p-2 rounded">
-            Medium: {formatTime(shortestTimeMedium)}
-          </div>
-          <div className="bg-violet-800 border border-violet-200 p-2 rounded">
-            Hard: {formatTime(shortestTimeHard)}
-          </div>
-        </div>
-      </div>
+      <GameHeader
+        shortestTimeEasy={shortestTimeEasy}
+        shortestTimeMedium={shortestTimeMedium}
+        shortestTimeHard={shortestTimeHard}
+      />
       <div className="flex gap-16 mb-5">
         <div className="flex items-center justify-around rounded border border-sky-200 bg-sky-700 w-36 h-10 ">
           <MdOutlineTimer />
