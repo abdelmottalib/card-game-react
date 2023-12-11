@@ -102,6 +102,7 @@ const HomePage = () => {
           );
           modifiedCards.forEach((card: Card, index: number) => {
             setTimeout(() => {
+              console.log(card);
               setCards((prevCards) =>
                 prevCards.map((prevCard, prevIndex) =>
                   prevIndex === index
@@ -117,6 +118,7 @@ const HomePage = () => {
             () => {
               const promises = modifiedCards.map((card: Card, index: number) =>
                 delayAction(() => {
+                  console.log(card);
                   setCards((prevCards) =>
                     prevCards.map((prevCard, prevIndex) =>
                       prevIndex === index
