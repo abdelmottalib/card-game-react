@@ -14,8 +14,7 @@ import GameHeader from "./components/GameHeader";
 import DifficultySelector from "./components/DifficultySelector";
 import CardGrid from "./components/CardGrid";
 import GameControls from "./components/GameControlls";
-import {Card, FlippedCard} from '@/app/types'
-
+import { Card, FlippedCard } from "./types";
 
 const HomePage = () => {
   const [cards, setCards] = useState<Card[]>([]);
@@ -50,17 +49,17 @@ const HomePage = () => {
   const [shortestTimeEasy, setShortestTimeEasy] = useState<number>(
     isLocalStorageAvailable()
       ? parseInt(localStorage.getItem("shortestTimeEasy") || "0", 10)
-      : 0
+      : 0,
   );
   const [shortestTimeMedium, setShortestTimeMedium] = useState<number>(
     isLocalStorageAvailable()
       ? parseInt(localStorage.getItem("shortestTimeMedium") || "0", 10)
-      : 0
+      : 0,
   );
   const [shortestTimeHard, setShortestTimeHard] = useState<number>(
     isLocalStorageAvailable()
       ? parseInt(localStorage.getItem("shortestTimeHard") || "0", 10)
-      : 0
+      : 0,
   );
 
   useEffect(() => {
@@ -83,14 +82,14 @@ const HomePage = () => {
           const count = difficulty.easy
             ? 10
             : difficulty.medium
-            ? 16
-            : difficulty.hard
-            ? 20
-            : 10;
+              ? 16
+              : difficulty.hard
+                ? 20
+                : 10;
           const drawnCards = await drawCards(deckId, count);
           //the glitch can be fixed with this need to have the component in position
           //absolute and use the use the timeout to avoid the glitch
-          setTimeout(() => {});
+          setTimeout(() => { });
           setLoading(false);
           const duplicatedCards = [...drawnCards, ...drawnCards];
           const shuffledCards = duplicatedCards.sort(() => Math.random() - 0.5);
@@ -99,7 +98,7 @@ const HomePage = () => {
               ...card,
               hidden: true,
               index: index,
-            })
+            }),
           );
           modifiedCards.forEach((card: Card, index: number) => {
             setTimeout(() => {
@@ -107,8 +106,8 @@ const HomePage = () => {
                 prevCards.map((prevCard, prevIndex) =>
                   prevIndex === index
                     ? { ...prevCard, hidden: false }
-                    : prevCard
-                )
+                    : prevCard,
+                ),
               );
               setClickable(false);
             }, index * 100);
@@ -122,10 +121,10 @@ const HomePage = () => {
                     prevCards.map((prevCard, prevIndex) =>
                       prevIndex === index
                         ? { ...prevCard, hidden: true }
-                        : prevCard
-                    )
+                        : prevCard,
+                    ),
                   );
-                }, index * 100)
+                }, index * 100),
               );
 
               Promise.all(promises).then(() => {
@@ -134,7 +133,7 @@ const HomePage = () => {
                 setInitialReveal(false);
               });
             },
-            difficulty.hard ? 8000 : 4000
+            difficulty.hard ? 8000 : 4000,
           );
         } catch (error) {
           console.error("Error fetching data:", error);
@@ -156,7 +155,7 @@ const HomePage = () => {
           difficulty,
           shortestTimeEasy,
           shortestTimeMedium,
-          shortestTimeHard
+          shortestTimeHard,
         );
 
         if (time < currentShortestTime! || currentShortestTime === 0) {
@@ -165,7 +164,7 @@ const HomePage = () => {
             difficulty,
             setShortestTimeEasy,
             setShortestTimeMedium,
-            setShortestTimeHard
+            setShortestTimeHard,
           );
           setLocalStorageCurrentShortestTime(time, difficulty);
         }
@@ -181,7 +180,7 @@ const HomePage = () => {
     }
     if (
       flippedCards.every(
-        (card) => card.index !== clickedCard.index && clickedCard.hidden
+        (card) => card.index !== clickedCard.index && clickedCard.hidden,
       )
     ) {
       setMoves((prev) => prev + 1);
@@ -195,7 +194,7 @@ const HomePage = () => {
     }
 
     const updatedCards = cards.map((card) =>
-      card.index === clickedCard.index ? { ...card, hidden: false } : card
+      card.index === clickedCard.index ? { ...card, hidden: false } : card,
     );
     setCards(updatedCards);
 
@@ -217,9 +216,9 @@ const HomePage = () => {
           setMatchedCardsAnimation(false);
           const updatedMatchedCards = updatedCards.map((card) =>
             card.index === updatedFlippedCards[0].index ||
-            card.index === updatedFlippedCards[1].index
+              card.index === updatedFlippedCards[1].index
               ? { ...card, matched: true }
-              : card
+              : card,
           );
           setCards(updatedMatchedCards);
         }, 1000);
@@ -227,7 +226,7 @@ const HomePage = () => {
         setTimeout(() => {
           setFlippedCards([]);
           const modifiedCards = updatedCards.map((card) =>
-            !card.matched ? { ...card, hidden: true } : card
+            !card.matched ? { ...card, hidden: true } : card,
           );
           setCards(modifiedCards);
         }, 1500);
@@ -236,13 +235,12 @@ const HomePage = () => {
   };
   return (
     <div
-      className={`h-screen mx-auto flex flex-col items-center justify-center ${
-        difficulty.easy
+      className={`h-screen mx-auto flex flex-col items-center justify-center ${difficulty.easy
           ? "w-[550px]"
           : // : difficulty.medium
-            // ? "w-[950px]"
-            "w-[1000px]"
-      } text-white`}
+          // ? "w-[950px]"
+          "w-[1000px]"
+        } text-white`}
     >
       <GameHeader
         shortestTimeEasy={shortestTimeEasy}
