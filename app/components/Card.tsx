@@ -1,14 +1,7 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React from "react";
+import { motion } from "framer-motion";
 
-interface Card {
-  code: string;
-  image: string;
-  index: number;
-  hidden: boolean;
-  matched: boolean;
-}
-
+import { Card } from "@/app/types";
 interface CardComponentProps {
   card: Card;
   handleCardClick: (card: Card) => void;

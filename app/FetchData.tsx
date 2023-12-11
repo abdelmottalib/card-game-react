@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 import { useState, useEffect } from "react";
 import {
@@ -13,20 +14,8 @@ import GameHeader from "./components/GameHeader";
 import DifficultySelector from "./components/DifficultySelector";
 import CardGrid from "./components/CardGrid";
 import GameControls from "./components/GameControlls";
+import {Card, FlippedCard} from '@/app/types'
 
-interface Card {
-  code: string;
-  image: string;
-  index: number;
-  hidden: boolean;
-  matched: boolean;
-}
-
-interface FlippedCard {
-  code: string;
-  index: number;
-  matched?: number;
-}
 
 const HomePage = () => {
   const [cards, setCards] = useState<Card[]>([]);

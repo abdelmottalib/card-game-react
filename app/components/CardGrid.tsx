@@ -1,13 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import CardComponent from './Card';
-interface Card {
-  code: string;
-  image: string;
-  index: number;
-  hidden: boolean;
-  matched: boolean;
-}
+import {Card} from '@/app/types'
 interface CardGridProps {
   difficulty: {
     easy: boolean;
@@ -30,8 +24,8 @@ const CardGrid: React.FC<CardGridProps> = ({
   <div
     className={`grid ${difficulty.easy ? 'grid-cols-5' : 'grid-cols-8'} gap-4`}
   >
-    {!loading
-      ? Array.isArray(cards) &&
+    {
+      Array.isArray(cards) &&
         cards.map((card: Card, index: number) => (
           <CardComponent
             key={index}
@@ -39,8 +33,8 @@ const CardGrid: React.FC<CardGridProps> = ({
             handleCardClick={handleCardClick}
             matchedCardsAnimation={matchedCardsAnimation}
           />
-        ))
-      : Array.from(
+        ))}
+      { loading && Array.from(
           { length: difficulty.easy ? 20 : difficulty.medium ? 30 : 40 },
           (_, index) => (
             <motion.div
