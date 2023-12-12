@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 
 import { Card } from '../types';
@@ -22,7 +22,7 @@ const CardComponent: React.FC<CardComponentProps> = ({
       onClick={() => handleCardClick(card)}
       // initial={{ x: -1000, rotateY: 0 }} // Set initial x value to move from the left
       animate={{
-        x: animation ? (card.hidden ? -1700 : 0) : 0,
+        x: animation ? (card.hidden ? -2700 : 0) : 0,
         rotateY: card.hidden ? -180 : 0,
         opacity: matchedCardsAnimation ? 0.7 : 1,
       }}
