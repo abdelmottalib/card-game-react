@@ -1,7 +1,7 @@
-import React from "react";
-import { motion } from "framer-motion";
-import CardComponent from "./Card";
-import { Card } from "@/app/types";
+import React from 'react';
+import { motion } from 'framer-motion';
+import CardComponent from './Card';
+import { Card } from '../types';
 interface CardGridProps {
   difficulty: {
     easy: boolean;
@@ -12,6 +12,7 @@ interface CardGridProps {
   cards: Card[] | null;
   handleCardClick: (card: Card) => void;
   matchedCardsAnimation: boolean;
+  spinner: boolean;
 }
 
 const CardGrid: React.FC<CardGridProps> = ({
@@ -20,9 +21,12 @@ const CardGrid: React.FC<CardGridProps> = ({
   cards,
   handleCardClick,
   matchedCardsAnimation,
+  spinner,
 }) => (
   <div
-    className={`grid ${difficulty.easy ? "grid-cols-5" : "grid-cols-8"} gap-4`}
+    className={`grid ${difficulty.easy ? 'grid-cols-5' : 'grid-cols-8'} gap-4 ${
+      difficulty.easy ? 'w-[475px] h-[498px]' : difficulty.medium ? 'w-[780px] h-[505px]': "w-[780px] h-[635px]"
+    }`}
   >
     {Array.isArray(cards) &&
       cards.map((card: Card, index: number) => (
@@ -39,14 +43,15 @@ const CardGrid: React.FC<CardGridProps> = ({
         (_, index) => (
           <motion.div
             key={index}
-            className={`w-[88px] h-[120px] relative aspect-w-2 aspect-h-3 border-2 border-gray-300 rounded-md overflow-hidden`}
+            className={`w-20 h-[110px] aspect-w-2 aspect-h-3 border-2 border-gray-300 rounded-md overflow-hidden bg-gray-800`}
             initial={{ rotate: 360 }}
             animate={{ rotate: 0 }}
           >
-            <div className="absolute inset-0 bg-gray-800"></div>
+            {/* <div className="absolute inset-0 bg-gray-800"></div> */}
           </motion.div>
-        ),
+        )
       )}
+    {spinner && <div>loading...</div>}
   </div>
 );
 

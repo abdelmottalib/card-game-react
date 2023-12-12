@@ -36,6 +36,7 @@ const HomePage = () => {
   const [clickable, setClickable] = useState(false);
   const [clickableButtons, setClickableButtons] = useState(true);
   const [loading, setLoading] = useState(true);
+  const [spinner, setSpinner] = useState(false);
   const isLocalStorageAvailable = () => {
     try {
       const testKey = '__test__';
@@ -73,6 +74,7 @@ const HomePage = () => {
     return () => clearInterval(interval);
   }, [gameStarted, gameCompleted]);
 
+
   useEffect(() => {
     if (playButtonClicked) {
       setClickableButtons(false);
@@ -100,6 +102,7 @@ const HomePage = () => {
               index: index,
             })
           );
+          setSpinner(false);
           modifiedCards.forEach((card: Card, index: number) => {
             setTimeout(() => {
               console.log(card);
@@ -258,6 +261,8 @@ const HomePage = () => {
         setShowConfetti={setShowConfetti}
         setPlayButtonClicked={setPlayButtonClicked}
         time={time}
+        setSpinner={setSpinner}
+        setCards={setCards}
       />
       <CardGrid
         difficulty={difficulty}
@@ -265,6 +270,7 @@ const HomePage = () => {
         cards={cards}
         handleCardClick={handleCardClick}
         matchedCardsAnimation={matchedCardsAnimation}
+        spinner={spinner}
       />
       <GameControls
         clickableButtons={clickableButtons}

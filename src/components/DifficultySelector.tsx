@@ -1,6 +1,7 @@
 import React, { FC, MouseEvent } from 'react';
 import { formatTime } from '../utils';
 import { MdOutlineTimer } from 'react-icons/md';
+import { Card } from '../types';
 
 interface DifficultySelectorProps {
   clickableButtons: boolean;
@@ -11,6 +12,8 @@ interface DifficultySelectorProps {
   setMoves: React.Dispatch<React.SetStateAction<number>>;
   setShowConfetti: React.Dispatch<React.SetStateAction<boolean>>;
   setPlayButtonClicked: React.Dispatch<React.SetStateAction<boolean>>;
+  setSpinner: React.Dispatch<React.SetStateAction<boolean>>;
+  setCards: React.Dispatch<React.SetStateAction<Card[]>>;
   time: number;
 }
 
@@ -22,6 +25,8 @@ const DifficultySelector: FC<DifficultySelectorProps> = ({
   setShowConfetti,
   setPlayButtonClicked,
   time,
+  setSpinner,
+  setCards,
 }) => (
   <div className="flex gap-16 mb-5">
     <div className="flex items-center justify-around rounded border border-sky-200 bg-sky-700 w-36 h-10 ">
@@ -40,6 +45,8 @@ const DifficultySelector: FC<DifficultySelectorProps> = ({
             setMoves(0);
             setShowConfetti(false);
             setPlayButtonClicked(true);
+            setSpinner(true);
+            setCards([]);
           }
         }}
       >
@@ -56,6 +63,8 @@ const DifficultySelector: FC<DifficultySelectorProps> = ({
             setMoves(0);
             setShowConfetti(false);
             setPlayButtonClicked(true);
+            setSpinner(true);
+            setCards([]);
           }
         }}
       >
@@ -72,6 +81,8 @@ const DifficultySelector: FC<DifficultySelectorProps> = ({
             setMoves(0);
             setShowConfetti(false);
             setPlayButtonClicked(true);
+            setSpinner(true);
+            setCards([]);
           }
         }}
       >
