@@ -43,6 +43,7 @@ const CardGrid: React.FC<CardGridProps> = ({
       ))}
     {loading &&
       !spinner &&
+
       Array.from(
         { length: difficulty.easy ? 20 : difficulty.medium ? 30 : 40 },
         (_, index) => (
