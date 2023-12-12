@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 import { useState, useEffect } from 'react';
 import {
@@ -91,7 +90,6 @@ const HomePage = () => {
           setCards([]);
           //the glitch can be fixed with this need to have the component in position
           //absolute and use the use the timeout to avoid the glitch
-          setTimeout(() => {});
           setLoading(false);
           const duplicatedCards = [...drawnCards, ...drawnCards];
           const shuffledCards = duplicatedCards.sort(() => Math.random() - 0.5);

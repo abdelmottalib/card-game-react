@@ -14,7 +14,7 @@ const CardComponent: React.FC<CardComponentProps> = ({
   matchedCardsAnimation,
 }) => (
   <motion.div
-    className={`relative aspect-w-2 aspect-h-3 border-2 border-gray-300 rounded-md overflow-hidden`}
+    className={`relative aspect-w-2 aspect-h-3 border-2 border-gray-300 rounded-md overflow-hidden cursor-pointer`}
     onClick={() => handleCardClick(card)}
     initial={{ rotateY: 0 }}
     animate={{

@@ -59,7 +59,7 @@ const CardGrid: React.FC<CardGridProps> = ({
       )}
     {spinner && (
       <div className="absolute inset-0 flex items-center justify-center">
-        <img src={Image} alt="spinner" />
+        <img src={'spinner-laoding.svg'} alt="spinner" />
       </div>
     )}
   </div>
