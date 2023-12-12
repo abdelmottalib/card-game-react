@@ -151,6 +151,7 @@ const HomePage = () => {
     }
   }, [playButtonClicked]);
 
+
   useEffect(() => {
     if (isLocalStorageAvailable()) {
       if (cards.every((card: Card) => !card.hidden) && !initialReveal) {

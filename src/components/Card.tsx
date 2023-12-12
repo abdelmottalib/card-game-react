@@ -1,7 +1,7 @@
-import React from "react";
-import { motion } from "framer-motion";
+import React from 'react';
+import { motion } from 'framer-motion';
 
-import { Card } from "../types";
+import { Card } from '../types';
 interface CardComponentProps {
   card: Card;
   handleCardClick: (card: Card) => void;
