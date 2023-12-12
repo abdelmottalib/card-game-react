@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import CardComponent from './Card';
 import { Card } from '../types';
+import Image from '../assets/infinity-spinnerr.svg';
 interface CardGridProps {
   difficulty: {
     easy: boolean;
@@ -25,7 +26,11 @@ const CardGrid: React.FC<CardGridProps> = ({
 }) => (
   <div
     className={`grid ${difficulty.easy ? 'grid-cols-5' : 'grid-cols-8'} gap-4 ${
-      difficulty.easy ? 'w-[475px] h-[498px]' : difficulty.medium ? 'w-[780px] h-[505px]': "w-[780px] h-[635px]"
+      difficulty.easy
+        ? 'w-[475px] h-[498px]'
+        : difficulty.medium
+        ? 'w-[780px] h-[505px]'
+        : 'w-[780px] h-[635px]'
     }`}
   >
     {Array.isArray(cards) &&
@@ -38,6 +43,7 @@ const CardGrid: React.FC<CardGridProps> = ({
         />
       ))}
     {loading &&
+      !spinner &&
       Array.from(
         { length: difficulty.easy ? 20 : difficulty.medium ? 30 : 40 },
         (_, index) => (
@@ -51,7 +57,11 @@ const CardGrid: React.FC<CardGridProps> = ({
           </motion.div>
         )
       )}
-    {spinner && <div>loading...</div>}
+    {spinner && (
+      <div className="absolute inset-0 flex items-center justify-center">
+        <img src={Image} alt="spinner" />
+      </div>
+    )}
   </div>
 );
 

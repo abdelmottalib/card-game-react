@@ -74,7 +74,6 @@ const HomePage = () => {
     return () => clearInterval(interval);
   }, [gameStarted, gameCompleted]);
 
-
   useEffect(() => {
     if (playButtonClicked) {
       setClickableButtons(false);
@@ -89,6 +88,7 @@ const HomePage = () => {
             ? 20
             : 10;
           const drawnCards = await drawCards(deckId, count);
+          setCards([]);
           //the glitch can be fixed with this need to have the component in position
           //absolute and use the use the timeout to avoid the glitch
           setTimeout(() => {});

@@ -1,4 +1,4 @@
-import React, { FC, MouseEvent } from 'react';
+import React, { FC  } from 'react';
 import { formatTime } from '../utils';
 import { MdOutlineTimer } from 'react-icons/md';
 import { Card } from '../types';
