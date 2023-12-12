@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-"use client";
-import { useState, useEffect } from "react";
+'use client';
+import { useState, useEffect } from 'react';
 import {
   createAndShuffleDeck,
   drawCards,
@@ -8,13 +8,13 @@ import {
   setCurrentShortestTime,
   setLocalStorageCurrentShortestTime,
   delayAction,
-} from "./utils";
-import Confetti from "react-confetti";
-import GameHeader from "./components/GameHeader";
-import DifficultySelector from "./components/DifficultySelector";
-import CardGrid from "./components/CardGrid";
-import GameControls from "./components/GameControlls";
-import { Card, FlippedCard } from "./types";
+} from './utils';
+import Confetti from 'react-confetti';
+import GameHeader from './components/GameHeader';
+import DifficultySelector from './components/DifficultySelector';
+import CardGrid from './components/CardGrid';
+import GameControls from './components/GameControlls';
+import { Card, FlippedCard } from './types';
 
 const HomePage = () => {
   const [cards, setCards] = useState<Card[]>([]);
@@ -38,7 +38,7 @@ const HomePage = () => {
   const [loading, setLoading] = useState(true);
   const isLocalStorageAvailable = () => {
     try {
-      const testKey = "__test__";
+      const testKey = '__test__';
       localStorage.setItem(testKey, testKey);
       localStorage.removeItem(testKey);
       return true;
@@ -48,25 +48,25 @@ const HomePage = () => {
   };
   const [shortestTimeEasy, setShortestTimeEasy] = useState<number>(
     isLocalStorageAvailable()
-      ? parseInt(localStorage.getItem("shortestTimeEasy") || "0", 10)
-      : 0,
+      ? parseInt(localStorage.getItem('shortestTimeEasy') || '0', 10)
+      : 0
   );
   const [shortestTimeMedium, setShortestTimeMedium] = useState<number>(
     isLocalStorageAvailable()
-      ? parseInt(localStorage.getItem("shortestTimeMedium") || "0", 10)
-      : 0,
+      ? parseInt(localStorage.getItem('shortestTimeMedium') || '0', 10)
+      : 0
   );
   const [shortestTimeHard, setShortestTimeHard] = useState<number>(
     isLocalStorageAvailable()
-      ? parseInt(localStorage.getItem("shortestTimeHard") || "0", 10)
-      : 0,
+      ? parseInt(localStorage.getItem('shortestTimeHard') || '0', 10)
+      : 0
   );
 
   useEffect(() => {
     if (!gameCompleted) setTime(0);
     const interval = setInterval(() => {
       if (gameStarted && !gameCompleted) {
-        setTime((prevTime) => prevTime + 1);
+        setTime((prevTime: number) => prevTime + 1);
       }
     }, 1000);
 
@@ -82,14 +82,14 @@ const HomePage = () => {
           const count = difficulty.easy
             ? 10
             : difficulty.medium
-              ? 16
-              : difficulty.hard
-                ? 20
-                : 10;
+            ? 16
+            : difficulty.hard
+            ? 20
+            : 10;
           const drawnCards = await drawCards(deckId, count);
           //the glitch can be fixed with this need to have the component in position
           //absolute and use the use the timeout to avoid the glitch
-          setTimeout(() => { });
+          setTimeout(() => {});
           setLoading(false);
           const duplicatedCards = [...drawnCards, ...drawnCards];
           const shuffledCards = duplicatedCards.sort(() => Math.random() - 0.5);
@@ -98,17 +98,17 @@ const HomePage = () => {
               ...card,
               hidden: true,
               index: index,
-            }),
+            })
           );
           modifiedCards.forEach((card: Card, index: number) => {
             setTimeout(() => {
               console.log(card);
-              setCards((prevCards) =>
+              setCards((prevCards: Card[]) =>
                 prevCards.map((prevCard, prevIndex) =>
                   prevIndex === index
                     ? { ...prevCard, hidden: false }
-                    : prevCard,
-                ),
+                    : prevCard
+                )
               );
               setClickable(false);
             }, index * 100);
@@ -119,14 +119,14 @@ const HomePage = () => {
               const promises = modifiedCards.map((card: Card, index: number) =>
                 delayAction(() => {
                   console.log(card);
-                  setCards((prevCards) =>
+                  setCards((prevCards: Card[]) =>
                     prevCards.map((prevCard, prevIndex) =>
                       prevIndex === index
                         ? { ...prevCard, hidden: true }
-                        : prevCard,
-                    ),
+                        : prevCard
+                    )
                   );
-                }, index * 100),
+                }, index * 100)
               );
 
               Promise.all(promises).then(() => {
@@ -135,10 +135,10 @@ const HomePage = () => {
                 setInitialReveal(false);
               });
             },
-            difficulty.hard ? 8000 : 4000,
+            difficulty.hard ? 8000 : 4000
           );
         } catch (error) {
-          console.error("Error fetching data:", error);
+          console.error('Error fetching data:', error);
         }
       };
       fetchData();
@@ -150,14 +150,14 @@ const HomePage = () => {
 
   useEffect(() => {
     if (isLocalStorageAvailable()) {
-      if (cards.every((card) => !card.hidden) && !initialReveal) {
+      if (cards.every((card: Card) => !card.hidden) && !initialReveal) {
         setShowConfetti(true);
         setGameCompleted(true);
         const currentShortestTime = getCurrentShortestTime(
           difficulty,
           shortestTimeEasy,
           shortestTimeMedium,
-          shortestTimeHard,
+          shortestTimeHard
         );
 
         if (time < currentShortestTime! || currentShortestTime === 0) {
@@ -166,7 +166,7 @@ const HomePage = () => {
             difficulty,
             setShortestTimeEasy,
             setShortestTimeMedium,
-            setShortestTimeHard,
+            setShortestTimeHard
           );
           setLocalStorageCurrentShortestTime(time, difficulty);
         }
@@ -182,10 +182,10 @@ const HomePage = () => {
     }
     if (
       flippedCards.every(
-        (card) => card.index !== clickedCard.index && clickedCard.hidden,
+        (card) => card.index !== clickedCard.index && clickedCard.hidden
       )
     ) {
-      setMoves((prev) => prev + 1);
+      setMoves((prev: number) => prev + 1);
     }
     if (!gameStarted) {
       setGameStarted(true);
@@ -195,8 +195,8 @@ const HomePage = () => {
       return;
     }
 
-    const updatedCards = cards.map((card) =>
-      card.index === clickedCard.index ? { ...card, hidden: false } : card,
+    const updatedCards = cards.map((card: Card) =>
+      card.index === clickedCard.index ? { ...card, hidden: false } : card
     );
     setCards(updatedCards);
 
@@ -216,19 +216,19 @@ const HomePage = () => {
         setTimeout(() => {
           setFlippedCards([]);
           setMatchedCardsAnimation(false);
-          const updatedMatchedCards = updatedCards.map((card) =>
+          const updatedMatchedCards = updatedCards.map((card: Card) =>
             card.index === updatedFlippedCards[0].index ||
-              card.index === updatedFlippedCards[1].index
+            card.index === updatedFlippedCards[1].index
               ? { ...card, matched: true }
-              : card,
+              : card
           );
           setCards(updatedMatchedCards);
         }, 1000);
       } else {
         setTimeout(() => {
           setFlippedCards([]);
-          const modifiedCards = updatedCards.map((card) =>
-            !card.matched ? { ...card, hidden: true } : card,
+          const modifiedCards = updatedCards.map((card: Card) =>
+            !card.matched ? { ...card, hidden: true } : card
           );
           setCards(modifiedCards);
         }, 1500);
@@ -237,12 +237,13 @@ const HomePage = () => {
   };
   return (
     <div
-      className={`h-screen mx-auto flex flex-col items-center justify-center ${difficulty.easy
-          ? "w-[550px]"
+      className={`h-screen mx-auto flex flex-col items-center justify-center ${
+        difficulty.easy
+          ? 'w-[550px]'
           : // : difficulty.medium
-          // ? "w-[950px]"
-          "w-[1000px]"
-        } text-white`}
+            // ? "w-[950px]"
+            'w-[1000px]'
+      } text-white`}
     >
       <GameHeader
         shortestTimeEasy={shortestTimeEasy}
