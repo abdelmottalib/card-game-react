@@ -9,6 +9,7 @@ interface CardComponentProps {
   matchedCardsAnimation: boolean;
 }
 
+
 const CardComponent: React.FC<CardComponentProps> = ({
   card,
   handleCardClick,
