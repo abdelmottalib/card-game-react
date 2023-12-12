@@ -13,6 +13,7 @@ interface CardGridProps {
   handleCardClick: (card: Card) => void;
   matchedCardsAnimation: boolean;
   spinner: boolean;
+  animation: boolean;
 }
 
 const CardGrid: React.FC<CardGridProps> = ({
@@ -22,6 +23,7 @@ const CardGrid: React.FC<CardGridProps> = ({
   handleCardClick,
   matchedCardsAnimation,
   spinner,
+  animation,
 }) => (
   <div
     className={`grid ${difficulty.easy ? 'grid-cols-5' : 'grid-cols-8'} gap-4 ${
@@ -37,13 +39,13 @@ const CardGrid: React.FC<CardGridProps> = ({
         <CardComponent
           key={index}
           card={card}
+          animation={animation}
           handleCardClick={handleCardClick}
           matchedCardsAnimation={matchedCardsAnimation}
         />
       ))}
     {loading &&
       !spinner &&
-
       Array.from(
         { length: difficulty.easy ? 20 : difficulty.medium ? 30 : 40 },
         (_, index) => (

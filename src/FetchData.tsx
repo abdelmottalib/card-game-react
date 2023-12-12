@@ -27,6 +27,7 @@ const HomePage = () => {
     useState<boolean>(false);
   const [gameCompleted, setGameCompleted] = useState<boolean>(false);
   const [playButtonClicked, setPlayButtonClicked] = useState<boolean>(false);
+  const [animation, setAnimation] = useState(true);
   const [difficulty, setDifficulty] = useState({
     easy: true,
     medium: false,
@@ -75,6 +76,7 @@ const HomePage = () => {
 
   useEffect(() => {
     if (playButtonClicked) {
+      setAnimation(true);
       setClickableButtons(false);
       const fetchData = async () => {
         try {
@@ -127,6 +129,7 @@ const HomePage = () => {
                         : prevCard
                     )
                   );
+                  setAnimation(false);
                 }, index * 100)
               );
 
@@ -148,7 +151,6 @@ const HomePage = () => {
       setGameCompleted(false);
     }
   }, [playButtonClicked]);
-
 
   useEffect(() => {
     if (isLocalStorageAvailable()) {
@@ -270,6 +272,7 @@ const HomePage = () => {
         handleCardClick={handleCardClick}
         matchedCardsAnimation={matchedCardsAnimation}
         spinner={spinner}
+        animation={animation}
       />
       <GameControls
         clickableButtons={clickableButtons}
