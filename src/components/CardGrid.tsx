@@ -2,7 +2,6 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import CardComponent from './Card';
 import { Card } from '../types';
-import Image from '../assets/infinity-spinnerr.svg';
 interface CardGridProps {
   difficulty: {
     easy: boolean;
