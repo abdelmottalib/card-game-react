@@ -7,6 +7,7 @@ import {
   setCurrentShortestTime,
   setLocalStorageCurrentShortestTime,
   delayAction,
+  isLocalStorageAvailable,
 } from './utils';
 import Confetti from 'react-confetti';
 import GameHeader from './components/GameHeader';
@@ -16,37 +17,75 @@ import GameControls from './components/GameControlls';
 import { Card, FlippedCard } from './types';
 
 const HomePage = () => {
+  // State to store the deck of cards for the game
   const [cards, setCards] = useState<Card[]>([]);
+
+  // State to track flipped cards during the game
   const [flippedCards, setFlippedCards] = useState<FlippedCard[]>([]);
+  //************************************************************** */
+
+  // State to control the initial reveal animation
   const [initialReveal, setInitialReveal] = useState<boolean>(true);
+  //************************************************************** */
+
+  // State to toggle confetti animation when the game is completed
   const [showConfetti, setShowConfetti] = useState<boolean>(false);
+  //************************************************************** */
+
+  // State to track the elapsed time in seconds during the game
   const [time, setTime] = useState<number>(0);
+  //************************************************************** */
+
+  // State to indicate whether the game has started
   const [gameStarted, setGameStarted] = useState<boolean>(false);
+  //************************************************************** */
+
+  // State to track the number of moves made by the player
   const [moves, setMoves] = useState<number>(0);
+  //************************************************************** */
+
+  // State to trigger animation when matched cards are found
   const [matchedCardsAnimation, setMatchedCardsAnimation] =
     useState<boolean>(false);
+  //************************************************************** */
+
+  // State to indicate whether the game has been completed
   const [gameCompleted, setGameCompleted] = useState<boolean>(false);
+  //************************************************************** */
+
+  // State to handle the click event of the play button
   const [playButtonClicked, setPlayButtonClicked] = useState<boolean>(false);
+  //************************************************************** */
+
+  // State to control the animation of card flipping
   const [animation, setAnimation] = useState(true);
+  //************************************************************** */
+
+  // State to store the selected difficulty level
   const [difficulty, setDifficulty] = useState({
     easy: true,
     medium: false,
     hard: false,
   });
+  //************************************************************** */
+
+  // State to control whether cards are clickable
   const [clickable, setClickable] = useState(false);
+  //************************************************************** */
+
+  // State to control whether buttons are clickable (e.g., difficulty selection)
   const [clickableButtons, setClickableButtons] = useState(true);
+  //************************************************************** */
+
+  // State to indicate whether the game is in a loading state
   const [loading, setLoading] = useState(true);
+  //************************************************************** */
+
+  // State to control the visibility of a loading spinner
   const [spinner, setSpinner] = useState(false);
-  const isLocalStorageAvailable = () => {
-    try {
-      const testKey = '__test__';
-      localStorage.setItem(testKey, testKey);
-      localStorage.removeItem(testKey);
-      return true;
-    } catch (e) {
-      return false;
-    }
-  };
+  //************************************************************** */
+
+  // State to store the shortest completion time for the 'easy, medium, hard' difficulty
   const [shortestTimeEasy, setShortestTimeEasy] = useState<number>(
     isLocalStorageAvailable()
       ? parseInt(localStorage.getItem('shortestTimeEasy') || '0', 10)
@@ -62,7 +101,9 @@ const HomePage = () => {
       ? parseInt(localStorage.getItem('shortestTimeHard') || '0', 10)
       : 0
   );
+  //************************************************************** */
 
+  // Effect hook for updating time every second
   useEffect(() => {
     if (!gameCompleted) setTime(0);
     const interval = setInterval(() => {
@@ -73,7 +114,9 @@ const HomePage = () => {
 
     return () => clearInterval(interval);
   }, [gameStarted, gameCompleted]);
+  /***************************************************************** */
 
+  // Effect hook for handling play button click
   useEffect(() => {
     if (playButtonClicked) {
       setAnimation(true);
@@ -151,7 +194,9 @@ const HomePage = () => {
       setGameCompleted(false);
     }
   }, [playButtonClicked]);
+  /************************************************************ */
 
+  // Effect hook for checking game completion and updating shortest time
   useEffect(() => {
     if (isLocalStorageAvailable()) {
       if (cards.every((card: Card) => !card.hidden) && !initialReveal) {
@@ -179,7 +224,9 @@ const HomePage = () => {
       }
     }
   }, [cards, initialReveal]);
+  /*********************************************************************** */
 
+  // Function to handle card click
   const handleCardClick = (clickedCard: Card) => {
     if (!clickable) {
       return;
@@ -239,6 +286,8 @@ const HomePage = () => {
       }
     }
   };
+  /****************************************************************** */
+
   return (
     <div
       className={`h-screen mx-auto flex flex-col items-center justify-center ${
