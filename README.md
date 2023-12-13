@@ -1,5 +1,3 @@
-# Site  
-
 https://card-game-react-delta.vercel.app/
 
 # Memory Game App
