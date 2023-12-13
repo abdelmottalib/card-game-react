@@ -1,30 +1,28 @@
-# React + TypeScript + Vite
+# Site  
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+https://card-game-react-delta.vercel.app/
 
-Currently, two official plugins are available:
+# Memory Game App
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+A simple memory card game built with React, Tailwind CSS, and Framer Motion.
 
-## Expanding the ESLint configuration
+## Overview
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+The Memory Game App is a React application that lets users enjoy a classic memory card game. The game features different difficulty levels, and engaging animations powered by Tailwind CSS and Framer Motion.
 
-- Configure the top-level `parserOptions` property like this:
+## Technologies Used
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
+- **React**: JavaScript library for building user interfaces.
+- **Tailwind CSS**: Utility-first CSS framework for building modern designs.
+- **Framer Motion**: Animation library for React.
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+## How to Launch
+
+1. **Clone the repository:**
+
+   ```bash
+   git clone git@github.com:konami2/card-game-react.git
+   cd card-game-react
+   npm install
+   npm run dev
+   ```
