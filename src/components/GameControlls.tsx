@@ -1,5 +1,5 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React from "react";
+import { motion } from "framer-motion";
 
 interface GameControlsProps {
   clickableButtons: boolean;
@@ -8,6 +8,7 @@ interface GameControlsProps {
   setShowConfetti: React.Dispatch<React.SetStateAction<boolean>>;
   setPlayButtonClicked: React.Dispatch<React.SetStateAction<boolean>>;
   moves: number;
+  difficulty: { easy: string; medium: string; hard: string };
 }
 
 const GameControls: React.FC<GameControlsProps> = ({
@@ -17,22 +18,23 @@ const GameControls: React.FC<GameControlsProps> = ({
   setShowConfetti,
   setPlayButtonClicked,
   moves,
+  difficulty,
 }) => (
   <motion.div
-    className="mt-10 h-10 w-full rounded flex items-center "
+    className={`${difficulty.hard ? "mt-2" : "mt-10"
+      } h-10 w-full rounded flex items-center`}
     onClick={() => {
       setInitialReveal(true);
       setMoves(0);
     }}
   >
-    <div className="flex items-center justify-around w-full">
+    <div className="flex items-center justify-around w-full ">
       <div className="flex items-center justify-around rounded border border-sky-200 bg-sky-700 shadow-md px-5 h-10 ">
         moves: {moves}
       </div>
       <motion.button
-        className={`flex items-center justify-around rounded border border-emerald-200 bg-emerald-700 shadow-md px-5 h-10 ${
-          !clickableButtons ? 'opacity-50' : ''
-        } `}
+        className={`flex items-center justify-around rounded border border-emerald-200 bg-emerald-700 shadow-md px-5 h-10 ${!clickableButtons ? "opacity-50" : ""
+          } `}
         onClick={() => {
           if (clickableButtons) {
             setInitialReveal(true);
