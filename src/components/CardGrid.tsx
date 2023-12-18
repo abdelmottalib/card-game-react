@@ -1,7 +1,7 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import CardComponent from './Card';
-import { Card } from '../types';
+import React from "react";
+import { motion } from "framer-motion";
+import CardComponent from "./Card";
+import { Card } from "../types";
 interface CardGridProps {
   difficulty: {
     easy: boolean;
@@ -25,14 +25,13 @@ const CardGrid: React.FC<CardGridProps> = ({
   spinner,
   animation,
 }) => (
-  <div
-    className={`grid ${difficulty.easy ? 'grid-cols-5' : 'grid-cols-8'} gap-4 ${
-      difficulty.easy
-        ? 'w-[475px] h-[498px]'
+  <section
+    className={`grid ${difficulty.easy ? "grid-cols-5" : "grid-cols-8"} gap-4 ${difficulty.easy
+        ? "w-[475px] h-[498px]"
         : difficulty.medium
-        ? 'w-[780px] h-[505px]'
-        : 'w-[780px] h-[635px]'
-    }`}
+          ? "w-[780px] h-[505px]"
+          : "w-[780px] h-[635px]"
+      }`}
   >
     {Array.isArray(cards) &&
       cards.map((card: Card, index: number) => (
@@ -57,14 +56,14 @@ const CardGrid: React.FC<CardGridProps> = ({
           >
             {/* <div className="absolute inset-0 bg-gray-800"></div> */}
           </motion.div>
-        )
+        ),
       )}
     {spinner && (
       <div className="absolute inset-0 flex items-center justify-center">
-        <img src={'spinner-laoding.svg'} alt="spinner" />
+        <img src={"spinner-laoding.svg"} alt="spinner" />
       </div>
     )}
-  </div>
+  </section>
 );
 
 export default CardGrid;

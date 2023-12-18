@@ -8,7 +8,7 @@ interface GameControlsProps {
   setShowConfetti: React.Dispatch<React.SetStateAction<boolean>>;
   setPlayButtonClicked: React.Dispatch<React.SetStateAction<boolean>>;
   moves: number;
-  difficulty: { easy: string; medium: string; hard: string };
+  difficulty: { easy: boolean; medium: boolean; hard: boolean };
 }
 
 const GameControls: React.FC<GameControlsProps> = ({

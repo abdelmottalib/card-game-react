@@ -1,8 +1,8 @@
-import React, { FC } from 'react';
-import { formatTime } from '../utils';
-import { MdOutlineTimer } from 'react-icons/md';
-import { Card } from '../types';
-import DifficultySelectorChoice from './DifficultySelectorChoice';
+import React, { FC } from "react";
+import { formatTime } from "../utils";
+import { MdOutlineTimer } from "react-icons/md";
+import { Card } from "../types";
+import DifficultySelectorChoice from "./DifficultySelectorChoice";
 
 interface DifficultySelectorProps {
   clickableButtons: boolean;
@@ -31,9 +31,9 @@ const DifficultySelector: FC<DifficultySelectorProps> = ({
 }) => {
   const onclick = (choice: string) => {
     if (clickableButtons) {
-      if (choice === 'easy') {
+      if (choice === "easy") {
         setDifficulty({ easy: true, medium: false, hard: false });
-      } else if (choice === 'medium') {
+      } else if (choice === "medium") {
         setDifficulty({ easy: false, medium: true, hard: false });
       } else {
         setDifficulty({ easy: false, medium: false, hard: true });
@@ -47,7 +47,7 @@ const DifficultySelector: FC<DifficultySelectorProps> = ({
     }
   };
   return (
-    <div className="flex gap-16 mb-5">
+    <section className="flex gap-16 mb-5">
       <div className="flex items-center justify-around rounded border border-sky-200 bg-sky-700 w-36 h-10 ">
         <MdOutlineTimer />
         {formatTime(time)}
@@ -69,7 +69,7 @@ const DifficultySelector: FC<DifficultySelectorProps> = ({
           clickableButtons={clickableButtons}
         />
       </div>
-    </div>
+    </section>
   );
 };
 

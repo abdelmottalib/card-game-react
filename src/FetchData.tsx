@@ -289,7 +289,7 @@ const HomePage = () => {
   /****************************************************************** */
 
   return (
-    <div
+    <main
       className={`h-screen mx-auto flex flex-col items-center justify-center ${difficulty.easy
           ? "w-[550px]"
           : // : difficulty.medium
@@ -339,7 +339,7 @@ const HomePage = () => {
           numberOfPieces={200}
         />
       )}
-    </div>
+    </main>
   );
 };
 
