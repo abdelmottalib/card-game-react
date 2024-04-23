@@ -146,7 +146,7 @@ const HomePage = () => {
             }),
           );
           setSpinner(false);
-          modifiedCards.forEach((card: Card, index: number) => {
+          modifiedCards.forEach((_card: Card, index: number) => {
             setTimeout(() => {
               
               setCards((prevCards: Card[]) =>
@@ -162,7 +162,7 @@ const HomePage = () => {
           setCards(modifiedCards);
           setTimeout(
             () => {
-              const promises = modifiedCards.map((card: Card, index: number) =>
+              const promises = modifiedCards.map((_card: Card, index: number) =>
                 delayAction(() => {
                   
                   setCards((prevCards: Card[]) =>
