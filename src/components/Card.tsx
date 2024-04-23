@@ -16,7 +16,6 @@ const CardComponent: React.FC<CardComponentProps> = ({
   matchedCardsAnimation,
   animation,
 }) => {
-  console.log(animation);
   return (
     <motion.div
       className={`relative aspect-w-2 aspect-h-3 border-2 border-gray-300 rounded-md overflow-hidden cursor-pointer`}
